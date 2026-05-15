@@ -1,29 +1,35 @@
-import React from 'react';
-
-import { AddRecipeSheet } from '@/components/add-recipe-sheet';
+import React from "react";
 
 type AddRecipeSheetContextValue = {
+  visible: boolean;
   open: () => void;
   close: () => void;
+  toggle: () => void;
 };
 
-const AddRecipeSheetContext = React.createContext<AddRecipeSheetContextValue | null>(null);
+const AddRecipeSheetContext =
+  React.createContext<AddRecipeSheetContextValue | null>(null);
 
-export function AddRecipeSheetProvider({ children }: { children: React.ReactNode }) {
+export function AddRecipeSheetProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [visible, setVisible] = React.useState(false);
 
   const value = React.useMemo(
     () => ({
+      visible,
       open: () => setVisible(true),
       close: () => setVisible(false),
+      toggle: () => setVisible((v) => !v),
     }),
-    [],
+    [visible],
   );
 
   return (
     <AddRecipeSheetContext.Provider value={value}>
       {children}
-      <AddRecipeSheet visible={visible} onClose={() => setVisible(false)} />
     </AddRecipeSheetContext.Provider>
   );
 }
@@ -31,7 +37,9 @@ export function AddRecipeSheetProvider({ children }: { children: React.ReactNode
 export function useAddRecipeSheet() {
   const ctx = React.useContext(AddRecipeSheetContext);
   if (!ctx) {
-    throw new Error('useAddRecipeSheet must be used within AddRecipeSheetProvider');
+    throw new Error(
+      "useAddRecipeSheet must be used within AddRecipeSheetProvider",
+    );
   }
   return ctx;
 }

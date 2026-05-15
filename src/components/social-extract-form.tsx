@@ -169,7 +169,7 @@ export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[
         styles.form,
-        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.six },
+        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.xxxxxxxxlarge },
       ]}>
       <Text variant="bodySmall" themeColor="textSecondary" style={styles.intro}>
         Paste a post link. We fetch the caption when an API key is configured, or you can paste the
@@ -339,8 +339,8 @@ export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
 
 const styles = StyleSheet.create({
   form: {
-    gap: Spacing.three,
-    paddingTop: Spacing.two,
+    gap: Spacing.xsmall,
+    paddingTop: Spacing.xxxsmall,
   },
   intro: {
     lineHeight: 22,
@@ -348,61 +348,61 @@ const styles = StyleSheet.create({
   platformRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   platformChip: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.three,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
+    borderRadius: Spacing.xsmall,
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxxsmall,
   },
   section: {
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two + 2,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxsmall,
     fontSize: 16,
   },
   captionInput: {
     minHeight: 120,
-    paddingTop: Spacing.three,
+    paddingTop: Spacing.xsmall,
   },
   hint: {
     lineHeight: 20,
-    marginTop: -Spacing.one,
+    marginTop: -Spacing.xxxxsmall,
   },
   extractBtn: {
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.three,
+    paddingVertical: Spacing.xsmall,
+    borderRadius: Spacing.xsmall,
     alignItems: 'center',
   },
   secondaryBtn: {
     alignSelf: 'flex-start',
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two + 2,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.base,
+    paddingVertical: Spacing.xxsmall,
   },
   notice: {
-    padding: Spacing.three,
-    borderRadius: Spacing.two,
+    padding: Spacing.xsmall,
+    borderRadius: Spacing.xxxsmall,
   },
   noticeText: {
     lineHeight: 20,
   },
   reviewHeading: {
-    marginTop: Spacing.two,
+    marginTop: Spacing.xxxsmall,
   },
   error: {
     color: '#d32f2f',
   },
   saveBtn: {
-    marginTop: Spacing.two,
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.three,
+    marginTop: Spacing.xxxsmall,
+    paddingVertical: Spacing.xsmall,
+    borderRadius: Spacing.xsmall,
     alignItems: 'center',
   },
   pressed: {

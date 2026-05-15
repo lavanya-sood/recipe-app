@@ -31,14 +31,14 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
-    gap: Spacing.three,
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.xsmall,
+    gap: Spacing.xsmall,
   },
   card: {
-    padding: Spacing.four,
-    borderRadius: Spacing.four,
-    gap: Spacing.two,
+    padding: Spacing.base,
+    borderRadius: Spacing.base,
+    gap: Spacing.xxxsmall,
   },
   sub: {
     lineHeight: 22,

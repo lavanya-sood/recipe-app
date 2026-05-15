@@ -54,10 +54,10 @@ export default function HomeScreen() {
           </ThemedView>
         ) : (
           <FlatList
-            contentContainerStyle={[styles.listContent, { paddingBottom: BottomTabInset + Spacing.six }]}
+            contentContainerStyle={[styles.listContent, { paddingBottom: BottomTabInset + Spacing.xxxxxxxxlarge }]}
             data={recipes}
             keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => <View style={{ height: Spacing.two }} />}
+            ItemSeparatorComponent={() => <View style={{ height: Spacing.xxxsmall }} />}
             renderItem={({ item }) => (
               <Pressable
                 accessibilityRole="button"
@@ -103,47 +103,47 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
-    gap: Spacing.three,
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.xsmall,
+    gap: Spacing.xsmall,
   },
   listContent: {
-    paddingTop: Spacing.two,
+    paddingTop: Spacing.xxxsmall,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: Spacing.three,
-    paddingHorizontal: Spacing.three,
-    borderRadius: Spacing.three,
-    gap: Spacing.three,
+    paddingVertical: Spacing.xsmall,
+    paddingHorizontal: Spacing.xsmall,
+    borderRadius: Spacing.xsmall,
+    gap: Spacing.xsmall,
   },
   thumb: {
     width: 52,
     height: 52,
-    borderRadius: Spacing.two,
+    borderRadius: Spacing.xxxsmall,
   },
   thumbPlaceholder: {
     opacity: 0.5,
   },
   rowMain: {
     flex: 1,
-    gap: Spacing.half,
+    gap: Spacing.xxxxxsmall,
   },
   rowTitle: {
     fontWeight: '600',
   },
   emptyCard: {
-    padding: Spacing.four,
-    borderRadius: Spacing.four,
-    gap: Spacing.three,
+    padding: Spacing.base,
+    borderRadius: Spacing.base,
+    gap: Spacing.xsmall,
     alignSelf: 'stretch',
   },
   emptySub: {
     lineHeight: 22,
   },
   placeholder: {
-    marginTop: Spacing.three,
+    marginTop: Spacing.xsmall,
   },
   pressed: {
     opacity: 0.75,

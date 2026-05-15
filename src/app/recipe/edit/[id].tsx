@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'stretch',
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.two,
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.xxxsmall,
   },
   missing: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: Spacing.four,
+    padding: Spacing.base,
   },
 });

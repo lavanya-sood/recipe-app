@@ -241,7 +241,7 @@ export function IngredientEditor({ items, onChange }: Props) {
           data={items}
           keyExtractor={(item) => item.id}
           scrollEnabled={false}
-          ItemSeparatorComponent={() => <View style={{ height: Spacing.two }} />}
+          ItemSeparatorComponent={() => <View style={{ height: Spacing.xxxsmall }} />}
           renderItem={renderRow}
           style={styles.list}
         />
@@ -252,49 +252,49 @@ export function IngredientEditor({ items, onChange }: Props) {
 
 const styles = StyleSheet.create({
   wrap: {
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   hint: {
     lineHeight: 20,
-    marginTop: -Spacing.one,
+    marginTop: -Spacing.xxxxsmall,
   },
   addRow: {
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   searchInput: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two + 2,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxsmall,
     fontSize: 16,
   },
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   qtyInput: {
     width: 56,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.two,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xxxsmall,
+    paddingVertical: Spacing.xxxsmall,
     fontSize: 15,
     textAlign: 'center',
   },
   unitInput: {
     width: 72,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.two,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xxxsmall,
+    paddingVertical: Spacing.xxxsmall,
     fontSize: 15,
     textAlign: 'center',
   },
   addBtn: {
     flex: 1,
-    paddingVertical: Spacing.two + 2,
-    borderRadius: Spacing.two,
+    paddingVertical: Spacing.xxsmall,
+    borderRadius: Spacing.xxxsmall,
     alignItems: 'center',
   },
   addBtnLabel: {
@@ -302,58 +302,58 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   suggestions: {
-    borderRadius: Spacing.two,
+    borderRadius: Spacing.xxxsmall,
     overflow: 'hidden',
   },
   suggestionRow: {
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two + 2,
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxsmall,
   },
   customAdd: {
-    paddingVertical: Spacing.one,
+    paddingVertical: Spacing.xxxxsmall,
   },
   unitChips: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.one,
+    gap: Spacing.xxxxsmall,
   },
   chip: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.one,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xxxsmall,
+    paddingVertical: Spacing.xxxxsmall,
   },
   list: {
-    marginTop: Spacing.one,
+    marginTop: Spacing.xxxxsmall,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: Spacing.two,
-    paddingHorizontal: Spacing.two,
-    borderRadius: Spacing.two,
-    gap: Spacing.two,
+    paddingVertical: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xxxsmall,
+    borderRadius: Spacing.xxxsmall,
+    gap: Spacing.xxxsmall,
   },
   rowFields: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   rowName: {
     flex: 1,
     fontWeight: '500',
   },
   webRemove: {
-    paddingHorizontal: Spacing.two,
+    paddingHorizontal: Spacing.xxxsmall,
   },
   deleteAction: {
     backgroundColor: '#d32f2f',
     justifyContent: 'center',
     alignItems: 'center',
     width: 88,
-    borderRadius: Spacing.two,
-    marginLeft: Spacing.two,
+    borderRadius: Spacing.xxxsmall,
+    marginLeft: Spacing.xxxsmall,
   },
   deleteLabel: {
     color: '#fff',

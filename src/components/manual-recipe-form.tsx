@@ -76,7 +76,7 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[
         styles.form,
-        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.six },
+        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.xxxxxxxxlarge },
       ]}>
       <Text variant="bodySmallBold">Title</Text>
       <TextInput
@@ -208,31 +208,31 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
 
 const styles = StyleSheet.create({
   form: {
-    gap: Spacing.four,
-    paddingTop: Spacing.two,
+    gap: Spacing.base,
+    paddingTop: Spacing.xxxsmall,
   },
   section: {
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   input: {
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.two,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two + 2,
+    borderRadius: Spacing.xxxsmall,
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxsmall,
     fontSize: 16,
   },
   hint: {
     lineHeight: 20,
-    marginTop: -Spacing.one,
+    marginTop: -Spacing.xxxxsmall,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.three,
+    gap: Spacing.xsmall,
   },
   gridCell: {
     width: '47%',
-    gap: Spacing.one,
+    gap: Spacing.xxxxsmall,
   },
   gridCellWide: {
     width: '100%',
@@ -241,9 +241,9 @@ const styles = StyleSheet.create({
     color: '#d32f2f',
   },
   saveBtn: {
-    marginTop: Spacing.two,
-    paddingVertical: Spacing.three,
-    borderRadius: Spacing.three,
+    marginTop: Spacing.xxxsmall,
+    paddingVertical: Spacing.xsmall,
+    borderRadius: Spacing.xsmall,
     alignItems: 'center',
   },
   pressed: {

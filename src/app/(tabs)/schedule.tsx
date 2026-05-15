@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.xsmall,
+    paddingBottom: BottomTabInset + Spacing.xsmall,
   },
 });

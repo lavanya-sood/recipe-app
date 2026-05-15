@@ -30,8 +30,8 @@ export default function CookbookScreen() {
           <FlatList
             data={listItems}
             keyExtractor={(item) => (item.type === 'virtual' ? item.id : item.cookbook.id)}
-            contentContainerStyle={{ paddingBottom: BottomTabInset + Spacing.six, gap: Spacing.two }}
-            ItemSeparatorComponent={() => <View style={{ height: Spacing.two }} />}
+            contentContainerStyle={{ paddingBottom: BottomTabInset + Spacing.xxxxxxxxlarge, gap: Spacing.xxxsmall }}
+            ItemSeparatorComponent={() => <View style={{ height: Spacing.xxxsmall }} />}
             renderItem={({ item }) => {
               const count = recipeCountForListItem(item, recipes);
               const name = item.type === 'virtual' ? item.name : item.cookbook.name;
@@ -77,14 +77,14 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
-    gap: Spacing.three,
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.xsmall,
+    gap: Spacing.xsmall,
   },
   card: {
-    padding: Spacing.four,
-    borderRadius: Spacing.four,
-    gap: Spacing.two,
+    padding: Spacing.base,
+    borderRadius: Spacing.base,
+    gap: Spacing.xxxsmall,
   },
   sub: {
     lineHeight: 22,
@@ -92,13 +92,13 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: Spacing.three,
-    borderRadius: Spacing.three,
-    gap: Spacing.two,
+    padding: Spacing.xsmall,
+    borderRadius: Spacing.xsmall,
+    gap: Spacing.xxxsmall,
   },
   rowMain: {
     flex: 1,
-    gap: Spacing.half,
+    gap: Spacing.xxxxxsmall,
   },
   pressed: {
     opacity: 0.75,

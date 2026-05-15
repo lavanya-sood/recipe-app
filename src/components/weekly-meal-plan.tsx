@@ -197,8 +197,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: Spacing.two,
-    marginBottom: Spacing.one,
+    paddingVertical: Spacing.xxxsmall,
+    marginBottom: Spacing.xxxxsmall,
   },
   weekRange: {
     flex: 1,
@@ -209,16 +209,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    paddingBottom: Spacing.four,
+    paddingBottom: Spacing.base,
   },
   dayBlock: {
-    paddingVertical: Spacing.three,
+    paddingVertical: Spacing.xsmall,
   },
   dayHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    gap: Spacing.three,
+    gap: Spacing.xsmall,
   },
   dayTitleWrap: {
     flex: 1,
@@ -253,12 +253,12 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   emptyDay: {
-    marginTop: Spacing.one,
-    marginLeft: Spacing.half,
+    marginTop: Spacing.xxxxsmall,
+    marginLeft: Spacing.xxxxxsmall,
   },
   recipeRow: {
-    marginTop: Spacing.two,
-    marginLeft: Spacing.half,
+    marginTop: Spacing.xxxsmall,
+    marginLeft: Spacing.xxxxxsmall,
     gap: 2,
   },
   recipeTitle: {
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: 'rgba(128,128,128,0.2)',
-    marginTop: Spacing.three,
+    marginTop: Spacing.xsmall,
   },
   pressed: {
     opacity: 0.7,

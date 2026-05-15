@@ -70,23 +70,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   sheet: {
-    borderTopLeftRadius: Spacing.four,
-    borderTopRightRadius: Spacing.four,
-    padding: Spacing.four,
+    borderTopLeftRadius: Spacing.base,
+    borderTopRightRadius: Spacing.base,
+    padding: Spacing.base,
     maxHeight: '70%',
-    gap: Spacing.three,
+    gap: Spacing.xsmall,
   },
   list: {
     maxHeight: 320,
   },
   row: {
-    paddingVertical: Spacing.three,
+    paddingVertical: Spacing.xsmall,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: 'rgba(128,128,128,0.25)',
   },
   cancelBtn: {
     alignItems: 'center',
-    paddingVertical: Spacing.two,
+    paddingVertical: Spacing.xxxsmall,
   },
   pressed: {
     opacity: 0.75,

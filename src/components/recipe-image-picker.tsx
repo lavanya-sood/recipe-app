@@ -76,15 +76,15 @@ export function RecipeImagePicker({ imageUri, onChange }: Props) {
 
 const styles = StyleSheet.create({
   wrap: {
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   hint: {
     lineHeight: 20,
-    marginTop: -Spacing.one,
+    marginTop: -Spacing.xxxxsmall,
   },
   frame: {
     height: 180,
-    borderRadius: Spacing.three,
+    borderRadius: Spacing.xsmall,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
     alignItems: 'center',

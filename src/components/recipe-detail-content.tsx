@@ -86,7 +86,7 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
     <ThemedView style={styles.outer}>
       <SafeAreaView style={styles.safe} edges={['left', 'right', 'bottom']}>
         <ScrollView
-          contentContainerStyle={[styles.content, { paddingBottom: BottomTabInset + Spacing.six }]}>
+          contentContainerStyle={[styles.content, { paddingBottom: BottomTabInset + Spacing.xxxxxxxxlarge }]}>
           <View style={styles.actions}>
             <Pressable
               accessibilityRole="button"
@@ -251,19 +251,19 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
   },
   content: {
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.three,
-    paddingTop: Spacing.two,
+    paddingHorizontal: Spacing.base,
+    gap: Spacing.xsmall,
+    paddingTop: Spacing.xxxsmall,
   },
   actions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   actionBtn: {
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two + 2,
-    borderRadius: Spacing.three,
+    paddingHorizontal: Spacing.base,
+    paddingVertical: Spacing.xxsmall,
+    borderRadius: Spacing.xsmall,
   },
   actionBtnOutline: {
     backgroundColor: 'transparent',
@@ -278,42 +278,42 @@ const styles = StyleSheet.create({
   hero: {
     width: '100%',
     height: 220,
-    borderRadius: Spacing.three,
+    borderRadius: Spacing.xsmall,
   },
   badges: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
   },
   badge: {
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.two,
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxxsmall,
+    borderRadius: Spacing.xxxsmall,
   },
   linkBanner: {
     alignSelf: 'flex-start',
   },
   sectionLabel: {
-    marginTop: Spacing.one,
+    marginTop: Spacing.xxxxsmall,
   },
   bodyBlock: {
-    marginTop: -Spacing.two,
+    marginTop: -Spacing.xxxsmall,
     lineHeight: 22,
   },
   ingredientList: {
-    marginTop: -Spacing.two,
-    gap: Spacing.one,
+    marginTop: -Spacing.xxxsmall,
+    gap: Spacing.xxxxsmall,
   },
   ingredientLine: {
     lineHeight: 22,
   },
   stepList: {
-    marginTop: -Spacing.two,
-    gap: Spacing.two,
+    marginTop: -Spacing.xxxsmall,
+    gap: Spacing.xxxsmall,
   },
   stepRow: {
     flexDirection: 'row',
-    gap: Spacing.two,
+    gap: Spacing.xxxsmall,
     alignItems: 'flex-start',
   },
   stepOrder: {

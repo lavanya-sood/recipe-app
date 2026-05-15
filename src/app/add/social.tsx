@@ -9,7 +9,7 @@ import { MaxContentWidth, Spacing } from '@/constants/theme';
 
 export default function AddSocialRecipeScreen() {
   const insets = useSafeAreaInsets();
-  const bottomPadding = insets.bottom + Spacing.six;
+  const bottomPadding = insets.bottom + Spacing.xxxxxxxxlarge;
 
   return (
     <ThemedView style={styles.outer}>
@@ -41,6 +41,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'stretch',
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
+    paddingHorizontal: Spacing.base,
   },
 });

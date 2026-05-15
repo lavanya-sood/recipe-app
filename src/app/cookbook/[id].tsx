@@ -51,8 +51,8 @@ export default function CookbookDetailScreen() {
             <FlatList
               data={items}
               keyExtractor={(item) => item.id}
-              contentContainerStyle={{ paddingBottom: BottomTabInset + Spacing.four }}
-              ItemSeparatorComponent={() => <View style={{ height: Spacing.two }} />}
+              contentContainerStyle={{ paddingBottom: BottomTabInset + Spacing.base }}
+              ItemSeparatorComponent={() => <View style={{ height: Spacing.xxxsmall }} />}
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() => router.push(`/recipe/${item.id}`)}
@@ -95,19 +95,19 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.two,
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.xxxsmall,
   },
   missing: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: Spacing.four,
+    padding: Spacing.base,
   },
   empty: {
-    padding: Spacing.four,
-    borderRadius: Spacing.four,
-    gap: Spacing.two,
+    padding: Spacing.base,
+    borderRadius: Spacing.base,
+    gap: Spacing.xxxsmall,
   },
   emptySub: {
     lineHeight: 22,
@@ -115,14 +115,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: Spacing.three,
-    borderRadius: Spacing.three,
-    gap: Spacing.three,
+    padding: Spacing.xsmall,
+    borderRadius: Spacing.xsmall,
+    gap: Spacing.xsmall,
   },
   thumb: {
     width: 48,
     height: 48,
-    borderRadius: Spacing.two,
+    borderRadius: Spacing.xxxsmall,
   },
   thumbPlaceholder: {
     opacity: 0.5,

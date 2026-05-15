@@ -9,7 +9,7 @@ export default function TabsLayout() {
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { overflow: "visible" },
+        tabBarStyle: { overflow: "visible", zIndex: 100, elevation: 100 },
       }}
     >
       <Tabs.Screen name="index" options={{ title: "Homes" }} />
