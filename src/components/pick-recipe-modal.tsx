@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, Modal, Pressable, StyleSheet } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -26,15 +26,15 @@ export function PickRecipeModal({ visible, dateKey, onClose, onSelect }: Props) 
         <Pressable
           style={[styles.sheet, { backgroundColor: theme.background }]}
           onPress={(e) => e.stopPropagation()}>
-          <ThemedText type="smallBold">Add recipe</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
+          <Text variant="bodySmallBold">Add recipe</Text>
+          <Text variant="bodySmall" themeColor="textSecondary">
             {dayLabel}
-          </ThemedText>
+          </Text>
 
           {recipes.length === 0 ? (
-            <ThemedText type="small" themeColor="textSecondary">
-              Add a recipe first from the + tab.
-            </ThemedText>
+            <Text variant="bodySmall" themeColor="textSecondary">
+              Add a recipe first using the + button.
+            </Text>
           ) : (
             <FlatList
               data={recipes}
@@ -44,18 +44,18 @@ export function PickRecipeModal({ visible, dateKey, onClose, onSelect }: Props) 
                 <Pressable
                   onPress={() => onSelect(item.id, item.title)}
                   style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
-                  <ThemedText type="default" numberOfLines={2}>
+                  <Text variant="bodyReg" numberOfLines={2}>
                     {item.title}
-                  </ThemedText>
+                  </Text>
                 </Pressable>
               )}
             />
           )}
 
           <Pressable onPress={onClose} style={styles.cancelBtn}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Cancel
-            </ThemedText>
+            </Text>
           </Pressable>
         </Pressable>
       </Pressable>

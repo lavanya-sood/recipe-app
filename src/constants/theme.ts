@@ -3,53 +3,52 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
-import '@/global.css';
+import "@/global.css";
 
-import { Platform } from 'react-native';
+import { Platform } from "react-native";
 
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
+    // text: '#000000',
+    // background: '#ffffff',
+    backgroundElement: "#F0F0F3",
+    backgroundSelected: "#E0E1E6",
+    textSecondary: "#60646C",
+    background: "#FFF8F3",
+    primary: "#722F37",
+    accent: "#D4A373",
+    text: "#2B211F",
+    secondary: "#E7D7C9",
+    border: "#383838",
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
+    // text: "#ffffff",
+    // background: "#000000",
+    backgroundElement: "#212225",
+    backgroundSelected: "#2E3135",
+    textSecondary: "#B0B4BA",
+    background: "#FFF8F3",
+    primary: "#722F37",
+    accent: "#D4A373",
+    text: "#2B211F",
+    secondary: "#E7D7C9",
+    border: "#383838",
   },
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
-  },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
-  },
-  web: {
-    sans: 'var(--font-display)',
-    serif: 'var(--font-serif)',
-    rounded: 'var(--font-rounded)',
-    mono: 'var(--font-mono)',
-  },
-});
+import { FontFamily } from "@/constants/fonts";
+
+export const Fonts = {
+  sans: FontFamily.sans,
+  serif: FontFamily.serif,
+  mono: Platform.select({
+    ios: "ui-monospace",
+    web: "var(--font-mono)",
+    default: "monospace",
+  })!,
+};
 
 export const Spacing = {
   half: 2,
@@ -59,6 +58,21 @@ export const Spacing = {
   four: 24,
   five: 32,
   six: 64,
+  xxxxxsmall: 2,
+  xxxxsmall: 4,
+  xxxsmall: 8,
+  xxsmall: 12,
+  xsmall: 16,
+  small: 20,
+  base: 24,
+  medium: 28,
+  large: 32,
+  xlarge: 36,
+  xxlarge: 40,
+  xxxlarge: 44,
+  xxxxlarge: 48,
+  xxxxxxlarge: 56,
+  xxxxxxxxlarge: 64,
 } as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;

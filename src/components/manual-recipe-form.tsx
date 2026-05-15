@@ -6,7 +6,7 @@ import { CookbookPicker } from '@/components/cookbook-picker';
 import { IngredientEditor } from '@/components/ingredient-editor';
 import { InstructionStepEditor } from '@/components/instruction-step-editor';
 import { RecipeImagePicker } from '@/components/recipe-image-picker';
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { BottomTabInset, Spacing } from '@/constants/theme';
 import { useFormInputStyle } from '@/hooks/use-form-input-style';
@@ -22,9 +22,10 @@ import {
 type Props = {
   recipe?: Recipe;
   onSaved?: () => void;
+  contentPaddingBottom?: number;
 };
 
-export function ManualRecipeForm({ recipe, onSaved }: Props) {
+export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Props) {
   const theme = useTheme();
   const inputStyle = useFormInputStyle();
   const { addRecipe, updateRecipe, cookbooks, addCookbook } = useRecipes();
@@ -73,8 +74,11 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
   return (
     <ScrollView
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={[styles.form, { paddingBottom: BottomTabInset + Spacing.six }]}>
-      <ThemedText type="smallBold">Title</ThemedText>
+      contentContainerStyle={[
+        styles.form,
+        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.six },
+      ]}>
+      <Text variant="bodySmallBold">Title</Text>
       <TextInput
         value={form.title}
         onChangeText={(v) => patch('title', v)}
@@ -98,10 +102,10 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
       <InstructionStepEditor steps={form.steps} onChange={(v) => patch('steps', v)} />
 
       <View style={styles.section}>
-        <ThemedText type="smallBold">Nutritional info</ThemedText>
-        <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+        <Text variant="bodySmallBold">Nutritional info</Text>
+        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
           Optional — per serving or total, however you track it.
-        </ThemedText>
+        </Text>
         <View style={styles.grid}>
           {(
             [
@@ -112,9 +116,9 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
             ] as const
           ).map(([label, key, placeholder, keyboard]) => (
             <View key={key} style={styles.gridCell}>
-              <ThemedText type="small" themeColor="textSecondary">
+              <Text variant="bodySmall" themeColor="textSecondary">
                 {label}
-              </ThemedText>
+              </Text>
               <TextInput
                 value={form[key]}
                 onChangeText={(v) => patch(key, v)}
@@ -130,15 +134,15 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
       </View>
 
       <View style={styles.section}>
-        <ThemedText type="smallBold">Additional info</ThemedText>
-        <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+        <Text variant="bodySmallBold">Additional info</Text>
+        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
           Optional — servings and timing.
-        </ThemedText>
+        </Text>
         <View style={styles.grid}>
           <View style={styles.gridCell}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Servings
-            </ThemedText>
+            </Text>
             <TextInput
               value={form.servings}
               onChangeText={(v) => patch('servings', v)}
@@ -150,9 +154,9 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
             />
           </View>
           <View style={styles.gridCell}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Prep time
-            </ThemedText>
+            </Text>
             <TextInput
               value={form.prepTime}
               onChangeText={(v) => patch('prepTime', v)}
@@ -163,9 +167,9 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
             />
           </View>
           <View style={[styles.gridCell, styles.gridCellWide]}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Cooking time
-            </ThemedText>
+            </Text>
             <TextInput
               value={form.cookTime}
               onChangeText={(v) => patch('cookTime', v)}
@@ -179,9 +183,9 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
       </View>
 
       {error && (
-        <ThemedText type="small" style={styles.error}>
+        <Text variant="bodySmall" style={styles.error}>
           {error}
-        </ThemedText>
+        </Text>
       )}
 
       <Pressable
@@ -194,9 +198,9 @@ export function ManualRecipeForm({ recipe, onSaved }: Props) {
         ]}
         accessibilityRole="button"
         accessibilityLabel={isEdit ? 'Save changes' : 'Save recipe'}>
-        <ThemedText type="smallBold" style={{ color: theme.background }}>
+        <Text variant="bodySmallBold" style={{ color: theme.background }}>
           {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Save recipe'}
-        </ThemedText>
+        </Text>
       </Pressable>
     </ScrollView>
   );

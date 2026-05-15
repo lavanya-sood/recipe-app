@@ -4,9 +4,10 @@ import React from 'react';
 import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
+import { useAddRecipeSheet } from '@/context/add-recipe-sheet-context';
 import { useRecipes } from '@/context/recipes-context';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -28,26 +29,27 @@ function subtitleForRecipe(recipe: Recipe, cookbooks: Cookbook[]) {
 export default function HomeScreen() {
   const theme = useTheme();
   const { recipes, cookbooks, loaded } = useRecipes();
+  const { open: openAddSheet } = useAddRecipeSheet();
 
   return (
     <ThemedView style={styles.outer}>
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ThemedText type="subtitle">Home</ThemedText>
+        <Text variant="h1">Home</Text>
 
         {!loaded ? (
-          <ThemedText type="small" themeColor="textSecondary" style={styles.placeholder}>
+          <Text variant="bodySmall" themeColor="textSecondary" style={styles.placeholder}>
             Loading…
-          </ThemedText>
+          </Text>
         ) : recipes.length === 0 ? (
           <ThemedView style={styles.emptyCard} type="backgroundElement">
-            <ThemedText type="default">No recipes yet</ThemedText>
-            <ThemedText type="small" themeColor="textSecondary" style={styles.emptySub}>
+            <Text variant="bodyReg">No recipes yet</Text>
+            <Text variant="bodySmall" themeColor="textSecondary" style={styles.emptySub}>
               Tap + to add your first recipe — everything stays on this device.
-            </ThemedText>
+            </Text>
             <Pressable
-              onPress={() => router.push('/add')}
+              onPress={openAddSheet}
               style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedText type="linkPrimary">Add a recipe</ThemedText>
+              <Text variant="linkPrimary">Add a recipe</Text>
             </Pressable>
           </ThemedView>
         ) : (
@@ -70,16 +72,16 @@ export default function HomeScreen() {
                     />
                   )}
                   <View style={styles.rowMain}>
-                    <ThemedText type="default" numberOfLines={2} style={styles.rowTitle}>
+                    <Text variant="bodyReg" numberOfLines={2} style={styles.rowTitle}>
                       {item.title}
-                    </ThemedText>
-                    <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
+                    </Text>
+                    <Text variant="bodySmall" themeColor="textSecondary" numberOfLines={1}>
                       {subtitleForRecipe(item, cookbooks)}
-                    </ThemedText>
+                    </Text>
                   </View>
-                  <ThemedText type="small" themeColor="textSecondary">
+                  <Text variant="bodySmall" themeColor="textSecondary">
                     ›
-                  </ThemedText>
+                  </Text>
                 </ThemedView>
               </Pressable>
             )}

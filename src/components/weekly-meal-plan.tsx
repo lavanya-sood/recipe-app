@@ -1,12 +1,12 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
 
 import { PickRecipeModal } from '@/components/pick-recipe-modal';
 import { ScheduleDatetimeModal } from '@/components/schedule-datetime-modal';
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -77,17 +77,17 @@ export function WeeklyMealPlan() {
           onPress={() => shiftWeek(-1)}
           hitSlop={12}
           style={({ pressed }) => pressed && styles.pressed}>
-          <ThemedText type="smallBold">‹</ThemedText>
+          <Text variant="bodySmallBold">‹</Text>
         </Pressable>
-        <ThemedText type="small" themeColor="textSecondary" style={styles.weekRange}>
+        <Text variant="bodySmall" themeColor="textSecondary" style={styles.weekRange}>
           {formatWeekRangeLong(weekStart)}
-        </ThemedText>
+        </Text>
         <Pressable
           accessibilityLabel="Next week"
           onPress={() => shiftWeek(1)}
           hitSlop={12}
           style={({ pressed }) => pressed && styles.pressed}>
-          <ThemedText type="smallBold">›</ThemedText>
+          <Text variant="bodySmallBold">›</Text>
         </Pressable>
       </View>
 
@@ -107,18 +107,18 @@ export function WeeklyMealPlan() {
                   <View style={styles.dayTitleWrap}>
                     {today ? (
                       <View style={styles.todayRow}>
-                        <ThemedText type="default" style={styles.todayLabel}>
+                        <Text variant="bodyReg" style={styles.todayLabel}>
                           Today
-                        </ThemedText>
-                        <ThemedText type="default" style={styles.dayTitle}>
+                        </Text>
+                        <Text variant="bodyReg" style={styles.dayTitle}>
                           {' · '}
                           {weekdayName(date)} {date.getDate()}
-                        </ThemedText>
+                        </Text>
                       </View>
                     ) : (
-                      <ThemedText type="default" style={styles.dayTitle}>
+                      <Text variant="bodyReg" style={styles.dayTitle}>
                         {weekdayName(date)} {date.getDate()}
-                      </ThemedText>
+                      </Text>
                     )}
                   </View>
                   <Pressable
@@ -130,14 +130,16 @@ export function WeeklyMealPlan() {
                       { borderColor: theme.backgroundSelected },
                       pressed && styles.pressed,
                     ]}>
-                    <Text style={[styles.addIcon, { color: theme.textSecondary }]}>+</Text>
+                    <Text variant="bodyReg" style={[styles.addIcon, { color: theme.textSecondary }]}>
+                      +
+                    </Text>
                   </Pressable>
                 </View>
 
                 {entries.length === 0 ? (
-                  <ThemedText type="small" themeColor="textSecondary" style={styles.emptyDay}>
+                  <Text variant="bodySmall" themeColor="textSecondary" style={styles.emptyDay}>
                     No recipes yet
-                  </ThemedText>
+                  </Text>
                 ) : (
                   entries.map((entry) => {
                     const recipe = recipes.find((r) => r.id === entry.recipeId);
@@ -147,12 +149,12 @@ export function WeeklyMealPlan() {
                         onPress={() => recipe && router.push(`/recipe/${recipe.id}`)}
                         onLongPress={() => confirmRemove(entry)}
                         style={({ pressed }) => [styles.recipeRow, pressed && styles.pressed]}>
-                        <ThemedText type="small" numberOfLines={2} style={styles.recipeTitle}>
+                        <Text variant="bodySmall" numberOfLines={2} style={styles.recipeTitle}>
                           {recipe?.title ?? 'Recipe removed'}
-                        </ThemedText>
-                        <ThemedText type="small" themeColor="textSecondary">
+                        </Text>
+                        <Text variant="bodySmall" themeColor="textSecondary">
                           {formatTimeLabel(entry.time)}
-                        </ThemedText>
+                        </Text>
                       </Pressable>
                     );
                   })

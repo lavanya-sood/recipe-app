@@ -3,7 +3,7 @@ import React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { useRecipes } from '@/context/recipes-context';
 import { UNCATAGORISED_COOKBOOK_ID } from '@/constants/cookbooks';
@@ -17,14 +17,14 @@ export default function CookbookScreen() {
   return (
     <ThemedView style={styles.outer}>
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ThemedText type="subtitle">Cookbook</ThemedText>
+        <Text variant="h1">Cookbook</Text>
 
         {listItems.length === 0 ? (
           <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="default">No cookbooks yet</ThemedText>
-            <ThemedText type="small" themeColor="textSecondary" style={styles.sub}>
+            <Text variant="bodyReg">No cookbooks yet</Text>
+            <Text variant="bodySmall" themeColor="textSecondary" style={styles.sub}>
               Favourite a recipe or assign a cookbook when adding one.
-            </ThemedText>
+            </Text>
           </ThemedView>
         ) : (
           <FlatList
@@ -47,16 +47,16 @@ export default function CookbookScreen() {
                   style={({ pressed }) => [pressed && styles.pressed]}>
                   <ThemedView type="backgroundElement" style={styles.row}>
                     <View style={styles.rowMain}>
-                      <ThemedText type="default" style={styles.rowTitle}>
+                      <Text variant="bodyReg" style={styles.rowTitle}>
                         {name}
-                      </ThemedText>
-                      <ThemedText type="small" themeColor="textSecondary">
+                      </Text>
+                      <Text variant="bodySmall" themeColor="textSecondary">
                         {count} {count === 1 ? 'recipe' : 'recipes'}
-                      </ThemedText>
+                      </Text>
                     </View>
-                    <ThemedText type="small" themeColor="textSecondary">
+                    <Text variant="bodySmall" themeColor="textSecondary">
                       ›
-                    </ThemedText>
+                    </Text>
                   </ThemedView>
                 </Pressable>
               );

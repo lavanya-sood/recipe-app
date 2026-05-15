@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
 
@@ -10,12 +10,12 @@ export default function SettingsScreen() {
   return (
     <ThemedView style={styles.outer}>
       <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-        <ThemedText type="subtitle">Settings</ThemedText>
+        <Text variant="h1">Settings</Text>
         <ThemedView type="backgroundElement" style={styles.card}>
-          <ThemedText type="default">Coming soon</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary" style={styles.sub}>
+          <Text variant="bodyReg">Coming soon</Text>
+          <Text variant="bodySmall" themeColor="textSecondary" style={styles.sub}>
             App preferences and data options will live here.
-          </ThemedText>
+          </Text>
         </ThemedView>
       </SafeAreaView>
     </ThemedView>

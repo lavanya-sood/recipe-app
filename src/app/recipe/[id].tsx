@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { RecipeDetailContent } from '@/components/recipe-detail-content';
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { useRecipes } from '@/context/recipes-context';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
@@ -17,7 +17,7 @@ export default function RecipeDetailScreen() {
     return (
       <ThemedView style={styles.missing}>
         <Stack.Screen options={{ title: 'Recipe' }} />
-        <ThemedText type="default">Recipe not found.</ThemedText>
+        <Text variant="bodyReg">Recipe not found.</Text>
       </ThemedView>
     );
   }

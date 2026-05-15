@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ManualRecipeForm } from '@/components/manual-recipe-form';
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { useRecipes } from '@/context/recipes-context';
 import { MaxContentWidth, Spacing } from '@/constants/theme';
@@ -18,7 +18,7 @@ export default function EditRecipeScreen() {
     return (
       <ThemedView style={styles.missing}>
         <Stack.Screen options={{ title: 'Edit recipe' }} />
-        <ThemedText type="default">Recipe not found.</ThemedText>
+        <Text variant="bodyReg">Recipe not found.</Text>
       </ThemedView>
     );
   }

@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import React from 'react';
 import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -38,10 +38,10 @@ export function RecipeImagePicker({ imageUri, onChange }: Props) {
 
   return (
     <View style={styles.wrap}>
-      <ThemedText type="smallBold">Image</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+      <Text variant="bodySmallBold">Image</Text>
+      <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
         Optional — add a photo of the finished dish.
-      </ThemedText>
+      </Text>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={imageUri ? 'Change recipe image' : 'Add recipe image'}
@@ -54,9 +54,9 @@ export function RecipeImagePicker({ imageUri, onChange }: Props) {
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.image} contentFit="cover" />
         ) : (
-          <ThemedText type="small" themeColor="textSecondary">
+          <Text variant="bodySmall" themeColor="textSecondary">
             Tap to choose a photo
-          </ThemedText>
+          </Text>
         )}
       </Pressable>
       {imageUri && (
@@ -65,9 +65,9 @@ export function RecipeImagePicker({ imageUri, onChange }: Props) {
           accessibilityLabel="Remove recipe image"
           onPress={() => onChange(null)}
           style={({ pressed }) => [styles.removeLink, pressed && styles.pressed]}>
-          <ThemedText type="small" themeColor="textSecondary">
+          <Text variant="bodySmall" themeColor="textSecondary">
             Remove image
-          </ThemedText>
+          </Text>
         </Pressable>
       )}
     </View>

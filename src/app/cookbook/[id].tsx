@@ -4,7 +4,7 @@ import React from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { useRecipes } from '@/context/recipes-context';
 import { UNCATAGORISED_COOKBOOK_ID, UNCATAGORISED_COOKBOOK_NAME } from '@/constants/cookbooks';
@@ -28,7 +28,7 @@ export default function CookbookDetailScreen() {
     return (
       <ThemedView style={styles.missing}>
         <Stack.Screen options={{ title: 'Cookbook' }} />
-        <ThemedText type="default">Cookbook not found.</ThemedText>
+        <Text variant="bodyReg">Cookbook not found.</Text>
       </ThemedView>
     );
   }
@@ -40,12 +40,12 @@ export default function CookbookDetailScreen() {
         <SafeAreaView style={styles.safe} edges={['left', 'right', 'bottom']}>
           {items.length === 0 ? (
             <ThemedView type="backgroundElement" style={styles.empty}>
-              <ThemedText type="default">No recipes here</ThemedText>
-              <ThemedText type="small" themeColor="textSecondary" style={styles.emptySub}>
+              <Text variant="bodyReg">No recipes here</Text>
+              <Text variant="bodySmall" themeColor="textSecondary" style={styles.emptySub}>
                 {isUncategorised
                   ? 'Recipes without a cookbook appear here.'
                   : 'Assign recipes to this cookbook when adding or editing them.'}
-              </ThemedText>
+              </Text>
             </ThemedView>
           ) : (
             <FlatList
@@ -69,12 +69,12 @@ export default function CookbookDetailScreen() {
                         ]}
                       />
                     )}
-                    <ThemedText type="default" numberOfLines={2} style={styles.rowTitle}>
+                    <Text variant="bodyReg" numberOfLines={2} style={styles.rowTitle}>
                       {item.title}
-                    </ThemedText>
-                    <ThemedText type="small" themeColor="textSecondary">
+                    </Text>
+                    <Text variant="bodySmall" themeColor="textSecondary">
                       ›
-                    </ThemedText>
+                    </Text>
                   </ThemedView>
                 </Pressable>
               )}

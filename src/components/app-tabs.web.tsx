@@ -11,7 +11,7 @@ import React from 'react';
 import { Pressable, useColorScheme, View, StyleSheet } from 'react-native';
 
 import { ExternalLink } from './external-link';
-import { ThemedText } from './themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from './themed-view';
 
 import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -25,7 +25,7 @@ export default function AppTabs() {
           <TabTrigger name="home" href="/" asChild>
             <TabButton>Recipes</TabButton>
           </TabTrigger>
-          <TabTrigger name="add" href="/add" asChild>
+          <TabTrigger name="add-manual" href="/add/manual" asChild>
             <TabButton>Add</TabButton>
           </TabTrigger>
         </CustomTabList>
@@ -40,9 +40,9 @@ export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps
       <ThemedView
         type={isFocused ? 'backgroundSelected' : 'backgroundElement'}
         style={styles.tabButtonView}>
-        <ThemedText type="small" themeColor={isFocused ? 'text' : 'textSecondary'}>
+        <Text variant="bodySmall" themeColor={isFocused ? 'text' : 'textSecondary'}>
           {children}
-        </ThemedText>
+        </Text>
       </ThemedView>
     </Pressable>
   );
@@ -55,15 +55,15 @@ export function CustomTabList(props: TabListProps) {
   return (
     <View {...props} style={styles.tabListContainer}>
       <ThemedView type="backgroundElement" style={styles.innerContainer}>
-        <ThemedText type="smallBold" style={styles.brandText}>
+        <Text variant="bodySmallBold" style={styles.brandText}>
           Recipe box
-        </ThemedText>
+        </Text>
 
         {props.children}
 
         <ExternalLink href="https://docs.expo.dev" asChild>
           <Pressable style={styles.externalPressable}>
-            <ThemedText type="link">Docs</ThemedText>
+            <Text variant="link">Docs</Text>
             <SymbolView
               tintColor={colors.text}
               name={{ ios: 'arrow.up.right.square', web: 'link' }}

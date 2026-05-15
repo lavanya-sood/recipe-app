@@ -3,13 +3,12 @@ import {
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useFormInputStyle } from '@/hooks/use-form-input-style';
@@ -55,7 +54,7 @@ export function InstructionStepEditor({ steps, onChange }: Props) {
     const row = (
       <ThemedView type="backgroundElement" style={styles.row}>
         <View style={[styles.orderBadge, { backgroundColor: theme.backgroundSelected }]}>
-          <ThemedText type="smallBold">{step.order}</ThemedText>
+          <Text variant="bodySmallBold">{step.order}</Text>
         </View>
         <TextInput
           value={step.text}
@@ -72,9 +71,9 @@ export function InstructionStepEditor({ steps, onChange }: Props) {
             onPress={() => removeStep(step.id)}
             hitSlop={8}
             style={({ pressed }) => [styles.webRemove, pressed && styles.pressed]}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Remove
-            </ThemedText>
+            </Text>
           </Pressable>
         )}
       </ThemedView>
@@ -101,10 +100,10 @@ export function InstructionStepEditor({ steps, onChange }: Props) {
 
   return (
     <View style={styles.wrap}>
-      <ThemedText type="smallBold">Instructions</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+      <Text variant="bodySmallBold">Instructions</Text>
+      <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
         Add each step separately — they are numbered automatically. Swipe left to remove.
-      </ThemedText>
+      </Text>
 
       <View style={styles.addRow}>
         <TextInput

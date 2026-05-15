@@ -12,7 +12,7 @@ import { CookbookPicker } from '@/components/cookbook-picker';
 import { IngredientEditor } from '@/components/ingredient-editor';
 import { InstructionStepEditor } from '@/components/instruction-step-editor';
 import { RecipeImagePicker } from '@/components/recipe-image-picker';
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { useRecipes } from '@/context/recipes-context';
 import { BottomTabInset, Spacing } from '@/constants/theme';
@@ -32,9 +32,10 @@ import {
 
 type Props = {
   onSaved?: () => void;
+  contentPaddingBottom?: number;
 };
 
-export function SocialExtractForm({ onSaved }: Props) {
+export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
   const theme = useTheme();
   const inputStyle = useFormInputStyle();
   const { addRecipe, cookbooks, addCookbook } = useRecipes();
@@ -166,11 +167,14 @@ export function SocialExtractForm({ onSaved }: Props) {
   return (
     <ScrollView
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={[styles.form, { paddingBottom: BottomTabInset + Spacing.six }]}>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.intro}>
+      contentContainerStyle={[
+        styles.form,
+        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.six },
+      ]}>
+      <Text variant="bodySmall" themeColor="textSecondary" style={styles.intro}>
         Paste a post link. We fetch the caption when an API key is configured, or you can paste the
         description yourself and we will pull out ingredients and steps.
-      </ThemedText>
+      </Text>
 
       <View style={styles.platformRow}>
         {SOCIAL_PLATFORMS.map((p) => {
@@ -190,18 +194,18 @@ export function SocialExtractForm({ onSaved }: Props) {
                 selected && { backgroundColor: theme.text },
                 pressed && styles.pressed,
               ]}>
-              <ThemedText
-                type="small"
+              <Text
+                variant="bodySmall"
                 style={selected ? { color: theme.background } : undefined}
                 themeColor={selected ? undefined : 'textSecondary'}>
                 {SOCIAL_PLATFORM_LABELS[p]}
-              </ThemedText>
+              </Text>
             </Pressable>
           );
         })}
       </View>
 
-      <ThemedText type="smallBold">Post URL</ThemedText>
+      <Text variant="bodySmallBold">Post URL</Text>
       <TextInput
         value={url}
         onChangeText={setUrl}
@@ -227,27 +231,27 @@ export function SocialExtractForm({ onSaved }: Props) {
         {loading ? (
           <ActivityIndicator color={theme.background} />
         ) : (
-          <ThemedText type="smallBold" style={{ color: theme.background }}>
+          <Text variant="bodySmallBold" style={{ color: theme.background }}>
             Extract from URL
-          </ThemedText>
+          </Text>
         )}
       </Pressable>
 
       {!hasApiKey && (
         <ThemedView type="backgroundElement" style={styles.notice}>
-          <ThemedText type="small" themeColor="textSecondary" style={styles.noticeText}>
+          <Text variant="bodySmall" themeColor="textSecondary" style={styles.noticeText}>
             Auto-extract needs{' '}
-            <ThemedText type="smallBold">EXPO_PUBLIC_SUPADATA_API_KEY</ThemedText> (Instagram, TikTok,
+            <Text variant="bodySmallBold">EXPO_PUBLIC_SUPADATA_API_KEY</Text> (Instagram, TikTok,
             Facebook, YouTube). Or paste the post / video description below — no API required.
-          </ThemedText>
+          </Text>
         </ThemedView>
       )}
 
       <View style={styles.section}>
-        <ThemedText type="smallBold">Or paste caption / description</ThemedText>
-        <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+        <Text variant="bodySmallBold">Or paste caption / description</Text>
+        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
           Copy the post text (ingredients & steps) from the app, then parse locally — no API required.
-        </ThemedText>
+        </Text>
         <TextInput
           value={caption}
           onChangeText={setCaption}
@@ -269,28 +273,28 @@ export function SocialExtractForm({ onSaved }: Props) {
             (loading || !caption.trim() || !url.trim()) && { opacity: 0.45 },
             pressed && caption.trim() && url.trim() && styles.pressed,
           ]}>
-          <ThemedText type="smallBold">Parse caption</ThemedText>
+          <Text variant="bodySmallBold">Parse caption</Text>
         </Pressable>
       </View>
 
       {info && (
-        <ThemedText type="small" themeColor="textSecondary">
+        <Text variant="bodySmall" themeColor="textSecondary">
           {info}
-        </ThemedText>
+        </Text>
       )}
       {error && (
-        <ThemedText type="small" style={styles.error}>
+        <Text variant="bodySmall" style={styles.error}>
           {error}
-        </ThemedText>
+        </Text>
       )}
 
       {extracted && (
         <>
-          <ThemedText type="smallBold" style={styles.reviewHeading}>
+          <Text variant="bodySmallBold" style={styles.reviewHeading}>
             Review & edit
-          </ThemedText>
+          </Text>
 
-          <ThemedText type="smallBold">Title</ThemedText>
+          <Text variant="bodySmallBold">Title</Text>
           <TextInput
             value={title}
             onChangeText={setTitle}
@@ -323,9 +327,9 @@ export function SocialExtractForm({ onSaved }: Props) {
             ]}
             accessibilityRole="button"
             accessibilityLabel="Save recipe">
-            <ThemedText type="smallBold" style={{ color: theme.background }}>
+            <Text variant="bodySmallBold" style={{ color: theme.background }}>
               {saving ? 'Saving…' : 'Save recipe'}
-            </ThemedText>
+            </Text>
           </Pressable>
         </>
       )}

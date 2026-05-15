@@ -3,7 +3,7 @@ import { Image } from 'expo-image';
 import React from 'react';
 import { useColorScheme, StyleSheet } from 'react-native';
 
-import { ThemedText } from './themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from './themed-view';
 
 import { Spacing } from '@/constants/theme';
@@ -13,9 +13,9 @@ export function WebBadge() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="code" themeColor="textSecondary" style={styles.versionText}>
+      <Text variant="code" themeColor="textSecondary" style={styles.versionText}>
         v{version}
-      </ThemedText>
+      </Text>
       <Image
         source={
           scheme === 'dark'

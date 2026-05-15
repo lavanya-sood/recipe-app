@@ -4,13 +4,12 @@ import {
   Platform,
   Pressable,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { INGREDIENT_SUGGESTIONS, QUANTITY_UNITS } from '@/constants/ingredient-suggestions';
 import { Spacing } from '@/constants/theme';
@@ -103,9 +102,9 @@ export function IngredientEditor({ items, onChange }: Props) {
             style={[styles.unitInput, inputStyle]}
             accessibilityLabel={`Unit for ${item.name}`}
           />
-          <ThemedText type="default" style={styles.rowName} numberOfLines={2}>
+          <Text variant="bodyReg" style={styles.rowName} numberOfLines={2}>
             {item.name}
-          </ThemedText>
+          </Text>
         </View>
         {Platform.OS === 'web' && (
           <Pressable
@@ -113,9 +112,9 @@ export function IngredientEditor({ items, onChange }: Props) {
             onPress={() => removeItem(item.id)}
             hitSlop={8}
             style={({ pressed }) => [styles.webRemove, pressed && styles.pressed]}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Remove
-            </ThemedText>
+            </Text>
           </Pressable>
         )}
       </ThemedView>
@@ -141,10 +140,10 @@ export function IngredientEditor({ items, onChange }: Props) {
 
   return (
     <View style={styles.wrap}>
-      <ThemedText type="smallBold">Ingredients</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+      <Text variant="bodySmallBold">Ingredients</Text>
+      <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
         Search or type a name, set quantity and unit, then add. Swipe left on a row to remove.
-      </ThemedText>
+      </Text>
 
       <View style={styles.addRow}>
         <TextInput
@@ -201,7 +200,7 @@ export function IngredientEditor({ items, onChange }: Props) {
               key={name}
               onPress={() => addIngredient(name)}
               style={({ pressed }) => [styles.suggestionRow, pressed && styles.pressed]}>
-              <ThemedText type="small">{name}</ThemedText>
+              <Text variant="bodySmall">{name}</Text>
             </Pressable>
           ))}
         </ThemedView>
@@ -213,9 +212,9 @@ export function IngredientEditor({ items, onChange }: Props) {
         <Pressable
           onPress={() => addIngredient(query)}
           style={({ pressed }) => [styles.customAdd, pressed && styles.pressed]}>
-          <ThemedText type="small" themeColor="textSecondary">
+          <Text variant="bodySmall" themeColor="textSecondary">
             Add “{query.trim()}”
-          </ThemedText>
+          </Text>
         </Pressable>
       )}
 
@@ -230,9 +229,9 @@ export function IngredientEditor({ items, onChange }: Props) {
               unit === u && { backgroundColor: theme.backgroundSelected },
               pressed && styles.pressed,
             ]}>
-            <ThemedText type="small" themeColor={unit === u ? 'text' : 'textSecondary'}>
+            <Text variant="bodySmall" themeColor={unit === u ? 'text' : 'textSecondary'}>
               {u}
-            </ThemedText>
+            </Text>
           </Pressable>
         ))}
       </View>

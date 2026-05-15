@@ -2,7 +2,7 @@ import DateTimePicker, { type DateTimePickerEvent } from '@react-native-communit
 import React from 'react';
 import { Modal, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { Spacing } from '@/constants/theme';
 import { useFormInputStyle } from '@/hooks/use-form-input-style';
@@ -77,27 +77,27 @@ export function ScheduleDatetimeModal({
         <Pressable
           style={[styles.sheet, { backgroundColor: theme.background }]}
           onPress={(e) => e.stopPropagation()}>
-          <ThemedText type="smallBold">Schedule</ThemedText>
-          <ThemedText type="default" style={styles.recipeName}>
+          <Text variant="bodySmallBold">Schedule</Text>
+          <Text variant="bodyReg" style={styles.recipeName}>
             {recipeTitle}
-          </ThemedText>
+          </Text>
 
           {dateLocked && initialDateKey && (
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               {when.toLocaleDateString(undefined, {
                 weekday: 'long',
                 month: 'long',
                 day: 'numeric',
               })}
-            </ThemedText>
+            </Text>
           )}
 
           {Platform.OS === 'web' ? (
             <View style={styles.webRow}>
               <View style={styles.webField}>
-                <ThemedText type="small" themeColor="textSecondary">
+                <Text variant="bodySmall" themeColor="textSecondary">
                   Date
-                </ThemedText>
+                </Text>
                 <TextInput
                   value={toDateKey(when)}
                   onChangeText={(v) => {
@@ -114,9 +114,9 @@ export function ScheduleDatetimeModal({
                 />
               </View>
               <View style={styles.webField}>
-                <ThemedText type="small" themeColor="textSecondary">
+                <Text variant="bodySmall" themeColor="textSecondary">
                   Time
-                </ThemedText>
+                </Text>
                 <TextInput
                   value={toTimeString(when)}
                   onChangeText={(v) => {
@@ -143,10 +143,10 @@ export function ScheduleDatetimeModal({
                       setShowTime(false);
                     }}
                     style={[styles.pickerTrigger, { borderColor: theme.backgroundSelected }]}>
-                    <ThemedText type="small" themeColor="textSecondary">
+                    <Text variant="bodySmall" themeColor="textSecondary">
                       Date
-                    </ThemedText>
-                    <ThemedText type="default">{dateLabel}</ThemedText>
+                    </Text>
+                    <Text variant="bodyReg">{dateLabel}</Text>
                   </Pressable>
                   {showDate && (
                     <DateTimePicker
@@ -166,10 +166,10 @@ export function ScheduleDatetimeModal({
                   setShowDate(false);
                 }}
                 style={[styles.pickerTrigger, { borderColor: theme.backgroundSelected }]}>
-                <ThemedText type="small" themeColor="textSecondary">
+                <Text variant="bodySmall" themeColor="textSecondary">
                   Time
-                </ThemedText>
-                <ThemedText type="default">{timeLabel}</ThemedText>
+                </Text>
+                <Text variant="bodyReg">{timeLabel}</Text>
               </Pressable>
               {showTime && (
                 <DateTimePicker
@@ -189,15 +189,15 @@ export function ScheduleDatetimeModal({
               { backgroundColor: theme.text },
               pressed && styles.pressed,
             ]}>
-            <ThemedText type="smallBold" style={{ color: theme.background }}>
+            <Text variant="bodySmallBold" style={{ color: theme.background }}>
               Add to schedule
-            </ThemedText>
+            </Text>
           </Pressable>
 
           <Pressable onPress={onClose} style={styles.cancelBtn}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               Cancel
-            </ThemedText>
+            </Text>
           </Pressable>
         </Pressable>
       </Pressable>

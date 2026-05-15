@@ -4,12 +4,11 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useFormInputStyle } from '@/hooks/use-form-input-style';
@@ -49,10 +48,10 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
 
   return (
     <View style={styles.wrap}>
-      <ThemedText type="smallBold">Cookbook</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+      <Text variant="bodySmallBold">Cookbook</Text>
+      <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
         Optional — assign this recipe to a cookbook.
-      </ThemedText>
+      </Text>
 
       <Pressable
         accessibilityRole="button"
@@ -64,12 +63,12 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
           { borderColor: theme.backgroundSelected, backgroundColor: theme.backgroundElement },
           pressed && styles.pressed,
         ]}>
-        <ThemedText type="default" numberOfLines={1} style={styles.triggerLabel}>
+        <Text variant="bodyReg" numberOfLines={1} style={styles.triggerLabel}>
           {selectedLabel}
-        </ThemedText>
-        <ThemedText type="small" themeColor="textSecondary">
+        </Text>
+        <Text variant="bodySmall" themeColor="textSecondary">
           ▾
-        </ThemedText>
+        </Text>
       </Pressable>
 
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
@@ -77,18 +76,18 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
           <Pressable
             style={[styles.sheet, { backgroundColor: theme.background }]}
             onPress={(e) => e.stopPropagation()}>
-            <ThemedText type="smallBold" style={styles.sheetTitle}>
+            <Text variant="bodySmallBold" style={styles.sheetTitle}>
               Cookbook
-            </ThemedText>
+            </Text>
 
             <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
               <Pressable
                 onPress={() => select(null)}
                 style={({ pressed }) => [styles.option, pressed && styles.pressed]}>
-                <ThemedText type="default" themeColor={selectedId == null ? 'text' : 'textSecondary'}>
+                <Text variant="bodyReg" themeColor={selectedId == null ? 'text' : 'textSecondary'}>
                   None
-                </ThemedText>
-                {selectedId == null && <ThemedText type="small">✓</ThemedText>}
+                </Text>
+                {selectedId == null && <Text variant="bodySmall">✓</Text>}
               </Pressable>
 
               {cookbooks.map((cookbook) => (
@@ -96,12 +95,12 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
                   key={cookbook.id}
                   onPress={() => select(cookbook.id)}
                   style={({ pressed }) => [styles.option, pressed && styles.pressed]}>
-                  <ThemedText
-                    type="default"
+                  <Text
+                    variant="bodyReg"
                     themeColor={selectedId === cookbook.id ? 'text' : 'textSecondary'}>
                     {cookbook.name}
-                  </ThemedText>
-                  {selectedId === cookbook.id && <ThemedText type="small">✓</ThemedText>}
+                  </Text>
+                  {selectedId === cookbook.id && <Text variant="bodySmall">✓</Text>}
                 </Pressable>
               ))}
 
@@ -109,7 +108,7 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
                 <Pressable
                   onPress={() => setCreating(true)}
                   style={({ pressed }) => [styles.option, styles.createOption, pressed && styles.pressed]}>
-                  <ThemedText type="linkPrimary">+ Create new cookbook</ThemedText>
+                  <Text variant="linkPrimary">+ Create new cookbook</Text>
                 </Pressable>
               ) : (
                 <ThemedView type="backgroundElement" style={styles.createForm}>
@@ -125,9 +124,9 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
                   />
                   <View style={styles.createActions}>
                     <Pressable onPress={() => setCreating(false)} hitSlop={8}>
-                      <ThemedText type="small" themeColor="textSecondary">
+                      <Text variant="bodySmall" themeColor="textSecondary">
                         Cancel
-                      </ThemedText>
+                      </Text>
                     </Pressable>
                     <Pressable
                       onPress={createAndSelect}
@@ -137,7 +136,9 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
                         { backgroundColor: theme.text, opacity: newName.trim() ? 1 : 0.4 },
                         pressed && newName.trim() && styles.pressed,
                       ]}>
-                      <Text style={{ color: theme.background, fontWeight: '600', fontSize: 14 }}>
+                      <Text
+                        variant="bodySmallBold"
+                        style={{ color: theme.background }}>
                         Create
                       </Text>
                     </Pressable>

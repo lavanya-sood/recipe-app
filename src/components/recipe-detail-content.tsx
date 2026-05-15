@@ -14,7 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { openBrowserAsync, WebBrowserPresentationStyle } from 'expo-web-browser';
 import { ScheduleDatetimeModal } from '@/components/schedule-datetime-modal';
-import { ThemedText } from '@/components/themed-text';
+import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -97,9 +97,9 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 { backgroundColor: theme.text },
                 pressed && styles.pressed,
               ]}>
-              <ThemedText type="smallBold" style={{ color: theme.background }}>
+              <Text variant="bodySmallBold" style={{ color: theme.background }}>
                 Edit
-              </ThemedText>
+              </Text>
             </Pressable>
             <Pressable
               accessibilityRole="button"
@@ -112,7 +112,7 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 favourited && { backgroundColor: theme.backgroundSelected },
                 pressed && styles.pressed,
               ]}>
-              <ThemedText type="smallBold">{favourited ? '★ Favourited' : '☆ Favourite'}</ThemedText>
+              <Text variant="bodySmallBold">{favourited ? '★ Favourited' : '☆ Favourite'}</Text>
             </Pressable>
             <Pressable
               accessibilityRole="button"
@@ -124,16 +124,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 { borderColor: theme.text },
                 pressed && styles.pressed,
               ]}>
-              <ThemedText type="smallBold">Schedule</ThemedText>
+              <Text variant="bodySmallBold">Schedule</Text>
             </Pressable>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Delete recipe"
               onPress={confirmDelete}
               style={({ pressed }) => [styles.actionBtn, styles.deleteBtn, pressed && styles.pressed]}>
-              <ThemedText type="smallBold" style={styles.deleteLabel}>
+              <Text variant="bodySmallBold" style={styles.deleteLabel}>
                 Delete
-              </ThemedText>
+              </Text>
             </Pressable>
           </View>
 
@@ -143,29 +143,29 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
 
           <View style={styles.badges}>
             <ThemedView type="backgroundElement" style={styles.badge}>
-              <ThemedText type="small">{kindLabel(recipe.kind)}</ThemedText>
+              <Text variant="bodySmall">{kindLabel(recipe.kind)}</Text>
             </ThemedView>
             {recipeCookbooks.map((name) => (
               <ThemedView key={name} type="backgroundElement" style={styles.badge}>
-                <ThemedText type="small">{name}</ThemedText>
+                <Text variant="bodySmall">{name}</Text>
               </ThemedView>
             ))}
           </View>
 
           {infoParts.length > 0 && (
-            <ThemedText type="small" themeColor="textSecondary">
+            <Text variant="bodySmall" themeColor="textSecondary">
               {infoParts.join(' · ')}
-            </ThemedText>
+            </Text>
           )}
 
           {recipe.nutrition && nutritionLine(recipe.nutrition) && (
             <>
-              <ThemedText type="smallBold" style={styles.sectionLabel}>
+              <Text variant="bodySmallBold" style={styles.sectionLabel}>
                 Nutrition
-              </ThemedText>
-              <ThemedText type="small" themeColor="textSecondary" style={styles.bodyBlock}>
+              </Text>
+              <Text variant="bodySmall" themeColor="textSecondary" style={styles.bodyBlock}>
                 {nutritionLine(recipe.nutrition)}
-              </ThemedText>
+              </Text>
             </>
           )}
 
@@ -184,24 +184,24 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                   });
                 }
               }}>
-              <ThemedText type="linkPrimary">Open original post</ThemedText>
+              <Text variant="linkPrimary">Open original post</Text>
             </Pressable>
           )}
 
           {!!recipe.ingredients?.length && (
             <>
-              <ThemedText type="smallBold" style={styles.sectionLabel}>
+              <Text variant="bodySmallBold" style={styles.sectionLabel}>
                 Ingredients
-              </ThemedText>
+              </Text>
               <View style={styles.ingredientList}>
                 {recipe.ingredients.map((item) => (
-                  <ThemedText
+                  <Text
                     key={item.id}
-                    type="small"
+                    variant="bodySmall"
                     themeColor="textSecondary"
                     style={styles.ingredientLine}>
                     • {formatIngredientLine(item)}
-                  </ThemedText>
+                  </Text>
                 ))}
               </View>
             </>
@@ -209,18 +209,18 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
 
           {!!recipe.steps?.length && (
             <>
-              <ThemedText type="smallBold" style={styles.sectionLabel}>
+              <Text variant="bodySmallBold" style={styles.sectionLabel}>
                 Instructions
-              </ThemedText>
+              </Text>
               <View style={styles.stepList}>
                 {recipe.steps.map((step) => (
                   <View key={step.id} style={styles.stepRow}>
-                    <ThemedText type="smallBold" style={styles.stepOrder}>
+                    <Text variant="bodySmallBold" style={styles.stepOrder}>
                       {step.order}.
-                    </ThemedText>
-                    <ThemedText type="small" themeColor="textSecondary" style={styles.stepText}>
+                    </Text>
+                    <Text variant="bodySmall" themeColor="textSecondary" style={styles.stepText}>
                       {step.text}
-                    </ThemedText>
+                    </Text>
                   </View>
                 ))}
               </View>
