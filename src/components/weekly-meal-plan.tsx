@@ -1,0 +1,273 @@
+import { router } from 'expo-router';
+import React from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { runOnJS } from 'react-native-reanimated';
+
+import { PickRecipeModal } from '@/components/pick-recipe-modal';
+import { ScheduleDatetimeModal } from '@/components/schedule-datetime-modal';
+import { ThemedText } from '@/components/themed-text';
+import { useRecipes } from '@/context/recipes-context';
+import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
+import type { ScheduleEntry } from '@/types/schedule';
+import { formatTimeLabel, scheduleSortKey } from '@/utils/schedule';
+import {
+  formatWeekRangeLong,
+  getWeekDates,
+  getWeekStart,
+  isToday,
+  toDateKey,
+  weekdayName,
+} from '@/utils/week-calendar';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+type PendingSchedule = {
+  recipeId: string;
+  recipeTitle: string;
+  dateKey: string;
+};
+
+export function WeeklyMealPlan() {
+  const theme = useTheme();
+  const { recipes, schedule, removeSchedule } = useRecipes();
+  const [weekStart, setWeekStart] = React.useState(() => getWeekStart(new Date()));
+  const [pickDateKey, setPickDateKey] = React.useState<string | null>(null);
+  const [pending, setPending] = React.useState<PendingSchedule | null>(null);
+
+  const weekDates = getWeekDates(weekStart);
+
+  const entriesByDate = React.useMemo(() => {
+    const map = new Map<string, ScheduleEntry[]>();
+    for (const entry of schedule) {
+      const list = map.get(entry.date) ?? [];
+      list.push(entry);
+      map.set(entry.date, list);
+    }
+    for (const [, list] of map) {
+      list.sort((a, b) => scheduleSortKey(a) - scheduleSortKey(b));
+    }
+    return map;
+  }, [schedule]);
+
+  function shiftWeek(delta: number) {
+    setWeekStart((prev) => new Date(prev.getTime() + delta * 7 * DAY_MS));
+  }
+
+  const swipeWeek = Gesture.Pan()
+    .activeOffsetX([-24, 24])
+    .onEnd((e) => {
+      if (e.translationX < -48) runOnJS(shiftWeek)(1);
+      else if (e.translationX > 48) runOnJS(shiftWeek)(-1);
+    });
+
+  function confirmRemove(entry: ScheduleEntry) {
+    Alert.alert('Remove from schedule?', undefined, [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Remove', style: 'destructive', onPress: () => removeSchedule(entry.id) },
+    ]);
+  }
+
+  return (
+    <>
+      <View style={styles.weekNav}>
+        <Pressable
+          accessibilityLabel="Previous week"
+          onPress={() => shiftWeek(-1)}
+          hitSlop={12}
+          style={({ pressed }) => pressed && styles.pressed}>
+          <ThemedText type="smallBold">‹</ThemedText>
+        </Pressable>
+        <ThemedText type="small" themeColor="textSecondary" style={styles.weekRange}>
+          {formatWeekRangeLong(weekStart)}
+        </ThemedText>
+        <Pressable
+          accessibilityLabel="Next week"
+          onPress={() => shiftWeek(1)}
+          hitSlop={12}
+          style={({ pressed }) => pressed && styles.pressed}>
+          <ThemedText type="smallBold">›</ThemedText>
+        </Pressable>
+      </View>
+
+      <GestureDetector gesture={swipeWeek}>
+        <ScrollView
+          style={styles.list}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}>
+          {weekDates.map((date) => {
+            const dateKey = toDateKey(date);
+            const today = isToday(date);
+            const entries = entriesByDate.get(dateKey) ?? [];
+
+            return (
+              <View key={dateKey} style={styles.dayBlock}>
+                <View style={styles.dayHeader}>
+                  <View style={styles.dayTitleWrap}>
+                    {today ? (
+                      <View style={styles.todayRow}>
+                        <ThemedText type="default" style={styles.todayLabel}>
+                          Today
+                        </ThemedText>
+                        <ThemedText type="default" style={styles.dayTitle}>
+                          {' · '}
+                          {weekdayName(date)} {date.getDate()}
+                        </ThemedText>
+                      </View>
+                    ) : (
+                      <ThemedText type="default" style={styles.dayTitle}>
+                        {weekdayName(date)} {date.getDate()}
+                      </ThemedText>
+                    )}
+                  </View>
+                  <Pressable
+                    accessibilityLabel={`Add recipe for ${weekdayName(date)}`}
+                    onPress={() => setPickDateKey(dateKey)}
+                    hitSlop={8}
+                    style={({ pressed }) => [
+                      styles.addBtn,
+                      { borderColor: theme.backgroundSelected },
+                      pressed && styles.pressed,
+                    ]}>
+                    <Text style={[styles.addIcon, { color: theme.textSecondary }]}>+</Text>
+                  </Pressable>
+                </View>
+
+                {entries.length === 0 ? (
+                  <ThemedText type="small" themeColor="textSecondary" style={styles.emptyDay}>
+                    No recipes yet
+                  </ThemedText>
+                ) : (
+                  entries.map((entry) => {
+                    const recipe = recipes.find((r) => r.id === entry.recipeId);
+                    return (
+                      <Pressable
+                        key={entry.id}
+                        onPress={() => recipe && router.push(`/recipe/${recipe.id}`)}
+                        onLongPress={() => confirmRemove(entry)}
+                        style={({ pressed }) => [styles.recipeRow, pressed && styles.pressed]}>
+                        <ThemedText type="small" numberOfLines={2} style={styles.recipeTitle}>
+                          {recipe?.title ?? 'Recipe removed'}
+                        </ThemedText>
+                        <ThemedText type="small" themeColor="textSecondary">
+                          {formatTimeLabel(entry.time)}
+                        </ThemedText>
+                      </Pressable>
+                    );
+                  })
+                )}
+
+                {dateKey !== toDateKey(weekDates[6]) && <View style={styles.divider} />}
+              </View>
+            );
+          })}
+        </ScrollView>
+      </GestureDetector>
+
+      <PickRecipeModal
+        visible={!!pickDateKey}
+        dateKey={pickDateKey ?? ''}
+        onClose={() => setPickDateKey(null)}
+        onSelect={(recipeId, recipeTitle) => {
+          const dateKey = pickDateKey!;
+          setPickDateKey(null);
+          setPending({ recipeId, recipeTitle, dateKey });
+        }}
+      />
+
+      {pending && (
+        <ScheduleDatetimeModal
+          visible
+          recipeId={pending.recipeId}
+          recipeTitle={pending.recipeTitle}
+          initialDateKey={pending.dateKey}
+          dateLocked
+          onClose={() => setPending(null)}
+        />
+      )}
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  weekNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.two,
+    marginBottom: Spacing.one,
+  },
+  weekRange: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 13,
+  },
+  list: {
+    flex: 1,
+  },
+  listContent: {
+    paddingBottom: Spacing.four,
+  },
+  dayBlock: {
+    paddingVertical: Spacing.three,
+  },
+  dayHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: Spacing.three,
+  },
+  dayTitleWrap: {
+    flex: 1,
+  },
+  todayRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  todayLabel: {
+    fontSize: 17,
+    fontWeight: '600',
+    lineHeight: 24,
+    color: '#208AEF',
+  },
+  dayTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    lineHeight: 24,
+  },
+  addBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addIcon: {
+    fontSize: 22,
+    fontWeight: '300',
+    lineHeight: 24,
+  },
+  emptyDay: {
+    marginTop: Spacing.one,
+    marginLeft: Spacing.half,
+  },
+  recipeRow: {
+    marginTop: Spacing.two,
+    marginLeft: Spacing.half,
+    gap: 2,
+  },
+  recipeTitle: {
+    fontWeight: '500',
+  },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(128,128,128,0.2)',
+    marginTop: Spacing.three,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
+});

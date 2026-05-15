@@ -1,0 +1,232 @@
+import React from 'react';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { Spacing } from '@/constants/theme';
+import { useFormInputStyle } from '@/hooks/use-form-input-style';
+import { useTheme } from '@/hooks/use-theme';
+import type { Cookbook } from '@/types/recipe';
+
+type Props = {
+  cookbooks: Cookbook[];
+  selectedId: string | null;
+  onChange: (id: string | null) => void;
+  onCreateCookbook: (name: string) => Cookbook;
+};
+
+export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbook }: Props) {
+  const theme = useTheme();
+  const inputStyle = useFormInputStyle();
+  const [open, setOpen] = React.useState(false);
+  const [creating, setCreating] = React.useState(false);
+  const [newName, setNewName] = React.useState('');
+
+  const selectedLabel =
+    selectedId != null ? cookbooks.find((c) => c.id === selectedId)?.name ?? 'Cookbook' : 'None';
+
+  function select(id: string | null) {
+    onChange(id);
+    setOpen(false);
+    setCreating(false);
+    setNewName('');
+  }
+
+  function createAndSelect() {
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+    const cookbook = onCreateCookbook(trimmed);
+    select(cookbook.id);
+  }
+
+  return (
+    <View style={styles.wrap}>
+      <ThemedText type="smallBold">Cookbook</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+        Optional — assign this recipe to a cookbook.
+      </ThemedText>
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Select cookbook"
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen(true)}
+        style={({ pressed }) => [
+          styles.trigger,
+          { borderColor: theme.backgroundSelected, backgroundColor: theme.backgroundElement },
+          pressed && styles.pressed,
+        ]}>
+        <ThemedText type="default" numberOfLines={1} style={styles.triggerLabel}>
+          {selectedLabel}
+        </ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          ▾
+        </ThemedText>
+      </Pressable>
+
+      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
+        <Pressable style={styles.overlay} onPress={() => setOpen(false)}>
+          <Pressable
+            style={[styles.sheet, { backgroundColor: theme.background }]}
+            onPress={(e) => e.stopPropagation()}>
+            <ThemedText type="smallBold" style={styles.sheetTitle}>
+              Cookbook
+            </ThemedText>
+
+            <ScrollView style={styles.list} keyboardShouldPersistTaps="handled">
+              <Pressable
+                onPress={() => select(null)}
+                style={({ pressed }) => [styles.option, pressed && styles.pressed]}>
+                <ThemedText type="default" themeColor={selectedId == null ? 'text' : 'textSecondary'}>
+                  None
+                </ThemedText>
+                {selectedId == null && <ThemedText type="small">✓</ThemedText>}
+              </Pressable>
+
+              {cookbooks.map((cookbook) => (
+                <Pressable
+                  key={cookbook.id}
+                  onPress={() => select(cookbook.id)}
+                  style={({ pressed }) => [styles.option, pressed && styles.pressed]}>
+                  <ThemedText
+                    type="default"
+                    themeColor={selectedId === cookbook.id ? 'text' : 'textSecondary'}>
+                    {cookbook.name}
+                  </ThemedText>
+                  {selectedId === cookbook.id && <ThemedText type="small">✓</ThemedText>}
+                </Pressable>
+              ))}
+
+              {!creating ? (
+                <Pressable
+                  onPress={() => setCreating(true)}
+                  style={({ pressed }) => [styles.option, styles.createOption, pressed && styles.pressed]}>
+                  <ThemedText type="linkPrimary">+ Create new cookbook</ThemedText>
+                </Pressable>
+              ) : (
+                <ThemedView type="backgroundElement" style={styles.createForm}>
+                  <TextInput
+                    value={newName}
+                    onChangeText={setNewName}
+                    placeholder="Cookbook name"
+                    placeholderTextColor={theme.textSecondary}
+                    style={[styles.input, inputStyle]}
+                    autoFocus
+                    onSubmitEditing={createAndSelect}
+                    returnKeyType="done"
+                  />
+                  <View style={styles.createActions}>
+                    <Pressable onPress={() => setCreating(false)} hitSlop={8}>
+                      <ThemedText type="small" themeColor="textSecondary">
+                        Cancel
+                      </ThemedText>
+                    </Pressable>
+                    <Pressable
+                      onPress={createAndSelect}
+                      disabled={!newName.trim()}
+                      style={({ pressed }) => [
+                        styles.createConfirm,
+                        { backgroundColor: theme.text, opacity: newName.trim() ? 1 : 0.4 },
+                        pressed && newName.trim() && styles.pressed,
+                      ]}>
+                      <Text style={{ color: theme.background, fontWeight: '600', fontSize: 14 }}>
+                        Create
+                      </Text>
+                    </Pressable>
+                  </View>
+                </ThemedView>
+              )}
+            </ScrollView>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrap: {
+    gap: Spacing.two,
+  },
+  hint: {
+    lineHeight: 20,
+    marginTop: -Spacing.one,
+  },
+  trigger: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two + 4,
+    gap: Spacing.two,
+  },
+  triggerLabel: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    padding: Spacing.four,
+  },
+  sheet: {
+    borderRadius: Spacing.three,
+    maxHeight: '70%',
+    padding: Spacing.three,
+  },
+  sheetTitle: {
+    marginBottom: Spacing.two,
+    paddingHorizontal: Spacing.one,
+  },
+  list: {
+    maxHeight: 360,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.three,
+    paddingHorizontal: Spacing.two,
+    borderRadius: Spacing.two,
+  },
+  createOption: {
+    marginTop: Spacing.one,
+  },
+  createForm: {
+    marginTop: Spacing.two,
+    padding: Spacing.three,
+    borderRadius: Spacing.two,
+    gap: Spacing.three,
+  },
+  input: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    fontSize: 16,
+  },
+  createActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: Spacing.three,
+  },
+  createConfirm: {
+    paddingHorizontal: Spacing.four,
+    paddingVertical: Spacing.two,
+    borderRadius: Spacing.two,
+  },
+  pressed: {
+    opacity: 0.75,
+  },
+});

@@ -1,0 +1,219 @@
+import React from 'react';
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
+
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { Spacing } from '@/constants/theme';
+import { useFormInputStyle } from '@/hooks/use-form-input-style';
+import { useTheme } from '@/hooks/use-theme';
+import type { RecipeInstructionStep } from '@/types/recipe';
+import { newStepId, reindexSteps } from '@/utils/normalize-recipe';
+
+type Props = {
+  steps: RecipeInstructionStep[];
+  onChange: (steps: RecipeInstructionStep[]) => void;
+};
+
+export function InstructionStepEditor({ steps, onChange }: Props) {
+  const theme = useTheme();
+  const inputStyle = useFormInputStyle();
+  const [draft, setDraft] = React.useState('');
+
+  function addStep() {
+    const text = draft.trim();
+    if (!text) return;
+    onChange(
+      reindexSteps([
+        ...steps,
+        {
+          id: newStepId(),
+          order: steps.length + 1,
+          text,
+        },
+      ]),
+    );
+    setDraft('');
+  }
+
+  function updateStep(id: string, text: string) {
+    onChange(steps.map((s) => (s.id === id ? { ...s, text } : s)));
+  }
+
+  function removeStep(id: string) {
+    onChange(reindexSteps(steps.filter((s) => s.id !== id)));
+  }
+
+  function renderStep(step: RecipeInstructionStep) {
+    const row = (
+      <ThemedView type="backgroundElement" style={styles.row}>
+        <View style={[styles.orderBadge, { backgroundColor: theme.backgroundSelected }]}>
+          <ThemedText type="smallBold">{step.order}</ThemedText>
+        </View>
+        <TextInput
+          value={step.text}
+          onChangeText={(text) => updateStep(step.id, text)}
+          placeholder="Describe this step…"
+          placeholderTextColor={theme.textSecondary}
+          style={[styles.stepInput, inputStyle]}
+          multiline
+          accessibilityLabel={`Instruction step ${step.order}`}
+        />
+        {Platform.OS === 'web' && (
+          <Pressable
+            accessibilityLabel={`Remove step ${step.order}`}
+            onPress={() => removeStep(step.id)}
+            hitSlop={8}
+            style={({ pressed }) => [styles.webRemove, pressed && styles.pressed]}>
+            <ThemedText type="small" themeColor="textSecondary">
+              Remove
+            </ThemedText>
+          </Pressable>
+        )}
+      </ThemedView>
+    );
+
+    if (Platform.OS === 'web') return <View key={step.id}>{row}</View>;
+
+    return (
+      <Swipeable
+        key={step.id}
+        overshootRight={false}
+        renderRightActions={() => (
+          <Pressable
+            accessibilityLabel={`Remove step ${step.order}`}
+            onPress={() => removeStep(step.id)}
+            style={({ pressed }) => [styles.deleteAction, pressed && styles.pressed]}>
+            <Text style={styles.deleteLabel}>Delete</Text>
+          </Pressable>
+        )}>
+        {row}
+      </Swipeable>
+    );
+  }
+
+  return (
+    <View style={styles.wrap}>
+      <ThemedText type="smallBold">Instructions</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+        Add each step separately — they are numbered automatically. Swipe left to remove.
+      </ThemedText>
+
+      <View style={styles.addRow}>
+        <TextInput
+          value={draft}
+          onChangeText={setDraft}
+          placeholder="Add a step…"
+          placeholderTextColor={theme.textSecondary}
+          style={[styles.draftInput, inputStyle]}
+          multiline
+          accessibilityLabel="New instruction step"
+          onSubmitEditing={addStep}
+          blurOnSubmit
+        />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Add instruction step"
+          disabled={!draft.trim()}
+          onPress={addStep}
+          style={({ pressed }) => [
+            styles.addBtn,
+            { backgroundColor: theme.text, opacity: draft.trim() ? 1 : 0.4 },
+            pressed && draft.trim() && styles.pressed,
+          ]}>
+          <Text style={[styles.addBtnLabel, { color: theme.background }]}>Add</Text>
+        </Pressable>
+      </View>
+
+      {steps.length > 0 && (
+        <View style={styles.list}>{steps.map((step) => renderStep(step))}</View>
+      )}
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrap: {
+    gap: Spacing.two,
+  },
+  hint: {
+    lineHeight: 20,
+    marginTop: -Spacing.one,
+  },
+  addRow: {
+    gap: Spacing.two,
+  },
+  draftInput: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two + 2,
+    fontSize: 16,
+    minHeight: 72,
+    textAlignVertical: 'top',
+  },
+  addBtn: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: Spacing.four,
+    paddingVertical: Spacing.two + 2,
+    borderRadius: Spacing.two,
+  },
+  addBtnLabel: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  list: {
+    gap: Spacing.two,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    padding: Spacing.two,
+    borderRadius: Spacing.two,
+    gap: Spacing.two,
+  },
+  orderBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: Spacing.one,
+  },
+  stepInput: {
+    flex: 1,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two,
+    fontSize: 15,
+    minHeight: 44,
+    textAlignVertical: 'top',
+  },
+  webRemove: {
+    paddingTop: Spacing.two,
+  },
+  deleteAction: {
+    backgroundColor: '#d32f2f',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 88,
+    borderRadius: Spacing.two,
+    marginLeft: Spacing.two,
+  },
+  deleteLabel: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  pressed: {
+    opacity: 0.75,
+  },
+});
