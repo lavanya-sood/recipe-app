@@ -6,6 +6,7 @@ import { runOnJS } from 'react-native-reanimated';
 
 import { PickRecipeModal } from '@/components/pick-recipe-modal';
 import { ScheduleDatetimeModal } from '@/components/schedule-datetime-modal';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { Spacing } from '@/constants/theme';
@@ -72,23 +73,23 @@ export function WeeklyMealPlan() {
   return (
     <>
       <View style={styles.weekNav}>
-        <Pressable
+        <Button
+          variant="ghost"
           accessibilityLabel="Previous week"
-          onPress={() => shiftWeek(-1)}
           hitSlop={12}
-          style={({ pressed }) => pressed && styles.pressed}>
+          onPress={() => shiftWeek(-1)}>
           <Text variant="bodySmallBold">‹</Text>
-        </Pressable>
+        </Button>
         <Text variant="bodySmall" themeColor="textSecondary" style={styles.weekRange}>
           {formatWeekRangeLong(weekStart)}
         </Text>
-        <Pressable
+        <Button
+          variant="ghost"
           accessibilityLabel="Next week"
-          onPress={() => shiftWeek(1)}
           hitSlop={12}
-          style={({ pressed }) => pressed && styles.pressed}>
+          onPress={() => shiftWeek(1)}>
           <Text variant="bodySmallBold">›</Text>
-        </Pressable>
+        </Button>
       </View>
 
       <GestureDetector gesture={swipeWeek}>

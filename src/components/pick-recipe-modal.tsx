@@ -1,6 +1,7 @@
 import React from 'react';
 import { FlatList, Modal, Pressable, StyleSheet } from 'react-native';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { Spacing } from '@/constants/theme';
@@ -52,11 +53,9 @@ export function PickRecipeModal({ visible, dateKey, onClose, onSelect }: Props) 
             />
           )}
 
-          <Pressable onPress={onClose} style={styles.cancelBtn}>
-            <Text variant="bodySmall" themeColor="textSecondary">
-              Cancel
-            </Text>
-          </Pressable>
+          <Button variant="ghost" fullWidth onPress={onClose} style={styles.cancelBtn}>
+            Cancel
+          </Button>
         </Pressable>
       </Pressable>
     </Modal>

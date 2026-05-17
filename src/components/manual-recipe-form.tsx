@@ -1,11 +1,12 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { CookbookPicker } from '@/components/cookbook-picker';
 import { IngredientEditor } from '@/components/ingredient-editor';
 import { InstructionStepEditor } from '@/components/instruction-step-editor';
 import { RecipeImagePicker } from '@/components/recipe-image-picker';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { BottomTabInset, Spacing } from '@/constants/theme';
@@ -87,6 +88,24 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
         style={[styles.input, inputStyle]}
         accessibilityLabel="Recipe title"
       />
+
+      <View style={styles.section}>
+        <Text variant="bodySmallBold">Source URL</Text>
+        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
+          Optional — link to the original recipe or article.
+        </Text>
+        <TextInput
+          value={form.url}
+          onChangeText={(v) => patch('url', v)}
+          placeholder="https://…"
+          placeholderTextColor={theme.textSecondary}
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="url"
+          style={[styles.input, inputStyle]}
+          accessibilityLabel="Source URL"
+        />
+      </View>
 
       <RecipeImagePicker imageUri={form.imageUri} onChange={(v) => patch('imageUri', v)} />
 
@@ -188,20 +207,16 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
         </Text>
       )}
 
-      <Pressable
+      <Button
+        variant="primary"
+        fullWidth
+        loading={saving}
         disabled={saving}
         onPress={() => void onSave()}
-        style={({ pressed }) => [
-          styles.saveBtn,
-          { backgroundColor: theme.text, opacity: saving ? 0.5 : 1 },
-          pressed && !saving && styles.pressed,
-        ]}
-        accessibilityRole="button"
-        accessibilityLabel={isEdit ? 'Save changes' : 'Save recipe'}>
-        <Text variant="bodySmallBold" style={{ color: theme.background }}>
-          {saving ? 'Saving…' : isEdit ? 'Save changes' : 'Save recipe'}
-        </Text>
-      </Pressable>
+        accessibilityLabel={isEdit ? 'Save changes' : 'Save recipe'}
+        style={styles.saveBtn}>
+        {isEdit ? 'Save changes' : 'Save recipe'}
+      </Button>
     </ScrollView>
   );
 }
@@ -242,11 +257,5 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     marginTop: Spacing.xxxsmall,
-    paddingVertical: Spacing.xsmall,
-    borderRadius: Spacing.xsmall,
-    alignItems: 'center',
-  },
-  pressed: {
-    opacity: 0.85,
   },
 });

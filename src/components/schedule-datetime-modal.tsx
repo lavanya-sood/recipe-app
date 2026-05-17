@@ -2,6 +2,7 @@ import DateTimePicker, { type DateTimePickerEvent } from '@react-native-communit
 import React from 'react';
 import { Modal, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRecipes } from '@/context/recipes-context';
 import { Spacing } from '@/constants/theme';
@@ -182,23 +183,13 @@ export function ScheduleDatetimeModal({
             </>
           )}
 
-          <Pressable
-            onPress={confirm}
-            style={({ pressed }) => [
-              styles.primaryBtn,
-              { backgroundColor: theme.text },
-              pressed && styles.pressed,
-            ]}>
-            <Text variant="bodySmallBold" style={{ color: theme.background }}>
-              Add to schedule
-            </Text>
-          </Pressable>
+          <Button variant="primary" fullWidth onPress={confirm}>
+            Add to schedule
+          </Button>
 
-          <Pressable onPress={onClose} style={styles.cancelBtn}>
-            <Text variant="bodySmall" themeColor="textSecondary">
-              Cancel
-            </Text>
-          </Pressable>
+          <Button variant="ghost" fullWidth onPress={onClose} style={styles.cancelBtn}>
+            Cancel
+          </Button>
         </Pressable>
       </Pressable>
     </Modal>
@@ -239,16 +230,8 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.xxsmall,
     fontSize: 16,
   },
-  primaryBtn: {
-    paddingVertical: Spacing.xsmall,
-    borderRadius: Spacing.xsmall,
-    alignItems: 'center',
-  },
   cancelBtn: {
     alignItems: 'center',
     paddingVertical: Spacing.xxxsmall,
-  },
-  pressed: {
-    opacity: 0.75,
   },
 });

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -66,15 +67,14 @@ export function InstructionStepEditor({ steps, onChange }: Props) {
           accessibilityLabel={`Instruction step ${step.order}`}
         />
         {Platform.OS === 'web' && (
-          <Pressable
+          <Button
+            variant="ghost"
             accessibilityLabel={`Remove step ${step.order}`}
-            onPress={() => removeStep(step.id)}
             hitSlop={8}
-            style={({ pressed }) => [styles.webRemove, pressed && styles.pressed]}>
-            <Text variant="bodySmall" themeColor="textSecondary">
-              Remove
-            </Text>
-          </Pressable>
+            onPress={() => removeStep(step.id)}
+            style={styles.webRemove}>
+            Remove
+          </Button>
         )}
       </ThemedView>
     );
@@ -117,18 +117,15 @@ export function InstructionStepEditor({ steps, onChange }: Props) {
           onSubmitEditing={addStep}
           blurOnSubmit
         />
-        <Pressable
-          accessibilityRole="button"
+        <Button
+          variant="primary"
+          size="sm"
           accessibilityLabel="Add instruction step"
           disabled={!draft.trim()}
           onPress={addStep}
-          style={({ pressed }) => [
-            styles.addBtn,
-            { backgroundColor: theme.text, opacity: draft.trim() ? 1 : 0.4 },
-            pressed && draft.trim() && styles.pressed,
-          ]}>
-          <Text style={[styles.addBtnLabel, { color: theme.background }]}>Add</Text>
-        </Pressable>
+          style={styles.addBtn}>
+          Add
+        </Button>
       </View>
 
       {steps.length > 0 && (
@@ -160,13 +157,6 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     alignSelf: 'flex-start',
-    paddingHorizontal: Spacing.base,
-    paddingVertical: Spacing.xxsmall,
-    borderRadius: Spacing.xxxsmall,
-  },
-  addBtnLabel: {
-    fontSize: 15,
-    fontWeight: '600',
   },
   list: {
     gap: Spacing.xxxsmall,

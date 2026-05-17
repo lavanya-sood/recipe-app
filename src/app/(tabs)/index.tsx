@@ -4,6 +4,7 @@ import React from 'react';
 import { FlatList, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
@@ -46,11 +47,9 @@ export default function HomeScreen() {
             <Text variant="bodySmall" themeColor="textSecondary" style={styles.emptySub}>
               Tap + to add your first recipe — everything stays on this device.
             </Text>
-            <Pressable
-              onPress={openAddSheet}
-              style={({ pressed }) => pressed && styles.pressed}>
+            <Button variant="ghost" onPress={openAddSheet}>
               <Text variant="linkPrimary">Add a recipe</Text>
-            </Pressable>
+            </Button>
           </ThemedView>
         ) : (
           <FlatList

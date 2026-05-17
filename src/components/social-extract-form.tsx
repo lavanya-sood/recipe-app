@@ -1,17 +1,11 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
 import { CookbookPicker } from '@/components/cookbook-picker';
 import { IngredientEditor } from '@/components/ingredient-editor';
 import { InstructionStepEditor } from '@/components/instruction-step-editor';
 import { RecipeImagePicker } from '@/components/recipe-image-picker';
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { useRecipes } from '@/context/recipes-context';
@@ -180,27 +174,18 @@ export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
         {SOCIAL_PLATFORMS.map((p) => {
           const selected = platform === p;
           return (
-            <Pressable
+            <Button
               key={p}
+              variant="chip"
+              selected={selected}
               accessibilityRole="button"
               accessibilityState={{ selected }}
               onPress={() => {
                 setPlatform(p);
                 setError(null);
-              }}
-              style={({ pressed }) => [
-                styles.platformChip,
-                { borderColor: theme.backgroundSelected },
-                selected && { backgroundColor: theme.text },
-                pressed && styles.pressed,
-              ]}>
-              <Text
-                variant="bodySmall"
-                style={selected ? { color: theme.background } : undefined}
-                themeColor={selected ? undefined : 'textSecondary'}>
-                {SOCIAL_PLATFORM_LABELS[p]}
-              </Text>
-            </Pressable>
+              }}>
+              {SOCIAL_PLATFORM_LABELS[p]}
+            </Button>
           );
         })}
       </View>
@@ -218,24 +203,16 @@ export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
         accessibilityLabel="Social post URL"
       />
 
-      <Pressable
-        accessibilityRole="button"
+      <Button
+        variant="primary"
+        fullWidth
+        size="md"
         accessibilityLabel="Extract from URL"
-        disabled={loading || !url.trim()}
-        onPress={() => void onAutoExtract()}
-        style={({ pressed }) => [
-          styles.extractBtn,
-          { backgroundColor: theme.text, opacity: loading || !url.trim() ? 0.5 : 1 },
-          pressed && !loading && url.trim() && styles.pressed,
-        ]}>
-        {loading ? (
-          <ActivityIndicator color={theme.background} />
-        ) : (
-          <Text variant="bodySmallBold" style={{ color: theme.background }}>
-            Extract from URL
-          </Text>
-        )}
-      </Pressable>
+        disabled={!url.trim()}
+        loading={loading}
+        onPress={() => void onAutoExtract()}>
+        Extract from URL
+      </Button>
 
       {!hasApiKey && (
         <ThemedView type="backgroundElement" style={styles.notice}>
@@ -262,19 +239,14 @@ export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
           textAlignVertical="top"
           accessibilityLabel="Post caption"
         />
-        <Pressable
-          accessibilityRole="button"
+        <Button
+          variant="outline"
+          size="sm"
           accessibilityLabel="Parse caption"
           disabled={loading || !caption.trim() || !url.trim()}
-          onPress={onParseCaption}
-          style={({ pressed }) => [
-            styles.secondaryBtn,
-            { borderColor: theme.text },
-            (loading || !caption.trim() || !url.trim()) && { opacity: 0.45 },
-            pressed && caption.trim() && url.trim() && styles.pressed,
-          ]}>
-          <Text variant="bodySmallBold">Parse caption</Text>
-        </Pressable>
+          onPress={onParseCaption}>
+          Parse caption
+        </Button>
       </View>
 
       {info && (
@@ -317,20 +289,16 @@ export function SocialExtractForm({ onSaved, contentPaddingBottom }: Props) {
 
           <InstructionStepEditor steps={steps} onChange={setSteps} />
 
-          <Pressable
+          <Button
+            variant="primary"
+            fullWidth
+            loading={saving}
             disabled={saving}
             onPress={() => void onSave()}
-            style={({ pressed }) => [
-              styles.saveBtn,
-              { backgroundColor: theme.text, opacity: saving ? 0.5 : 1 },
-              pressed && !saving && styles.pressed,
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Save recipe">
-            <Text variant="bodySmallBold" style={{ color: theme.background }}>
-              {saving ? 'Saving…' : 'Save recipe'}
-            </Text>
-          </Pressable>
+            accessibilityLabel="Save recipe"
+            style={styles.saveBtn}>
+            Save recipe
+          </Button>
         </>
       )}
     </ScrollView>
@@ -350,12 +318,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: Spacing.xxxsmall,
   },
-  platformChip: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.xsmall,
-    paddingHorizontal: Spacing.xsmall,
-    paddingVertical: Spacing.xxxsmall,
-  },
   section: {
     gap: Spacing.xxxsmall,
   },
@@ -374,18 +336,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: -Spacing.xxxxsmall,
   },
-  extractBtn: {
-    paddingVertical: Spacing.xsmall,
-    borderRadius: Spacing.xsmall,
-    alignItems: 'center',
-  },
-  secondaryBtn: {
-    alignSelf: 'flex-start',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.xxxsmall,
-    paddingHorizontal: Spacing.base,
-    paddingVertical: Spacing.xxsmall,
-  },
   notice: {
     padding: Spacing.xsmall,
     borderRadius: Spacing.xxxsmall,
@@ -401,11 +351,5 @@ const styles = StyleSheet.create({
   },
   saveBtn: {
     marginTop: Spacing.xxxsmall,
-    paddingVertical: Spacing.xsmall,
-    borderRadius: Spacing.xsmall,
-    alignItems: 'center',
-  },
-  pressed: {
-    opacity: 0.85,
   },
 });

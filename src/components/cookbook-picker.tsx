@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -105,11 +106,14 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
               ))}
 
               {!creating ? (
-                <Pressable
+                <Button
+                  variant="ghost"
+                  fullWidth
+                  contentAlign="start"
                   onPress={() => setCreating(true)}
-                  style={({ pressed }) => [styles.option, styles.createOption, pressed && styles.pressed]}>
+                  style={styles.createCookbookLink}>
                   <Text variant="linkPrimary">+ Create new cookbook</Text>
-                </Pressable>
+                </Button>
               ) : (
                 <ThemedView type="backgroundElement" style={styles.createForm}>
                   <TextInput
@@ -123,25 +127,16 @@ export function CookbookPicker({ cookbooks, selectedId, onChange, onCreateCookbo
                     returnKeyType="done"
                   />
                   <View style={styles.createActions}>
-                    <Pressable onPress={() => setCreating(false)} hitSlop={8}>
-                      <Text variant="bodySmall" themeColor="textSecondary">
-                        Cancel
-                      </Text>
-                    </Pressable>
-                    <Pressable
-                      onPress={createAndSelect}
+                    <Button variant="ghost" hitSlop={8} onPress={() => setCreating(false)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
                       disabled={!newName.trim()}
-                      style={({ pressed }) => [
-                        styles.createConfirm,
-                        { backgroundColor: theme.text, opacity: newName.trim() ? 1 : 0.4 },
-                        pressed && newName.trim() && styles.pressed,
-                      ]}>
-                      <Text
-                        variant="bodySmallBold"
-                        style={{ color: theme.background }}>
-                        Create
-                      </Text>
-                    </Pressable>
+                      onPress={createAndSelect}>
+                      Create
+                    </Button>
                   </View>
                 </ThemedView>
               )}
@@ -200,8 +195,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xxxsmall,
     borderRadius: Spacing.xxxsmall,
   },
-  createOption: {
+  createCookbookLink: {
     marginTop: Spacing.xxxxsmall,
+    paddingVertical: Spacing.xsmall,
+    paddingHorizontal: Spacing.xxxsmall,
+    borderRadius: Spacing.xxxsmall,
   },
   createForm: {
     marginTop: Spacing.xxxsmall,
@@ -221,11 +219,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     gap: Spacing.xsmall,
-  },
-  createConfirm: {
-    paddingHorizontal: Spacing.base,
-    paddingVertical: Spacing.xxxsmall,
-    borderRadius: Spacing.xxxsmall,
   },
   pressed: {
     opacity: 0.75,

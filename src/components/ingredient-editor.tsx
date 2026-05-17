@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { ThemedView } from '@/components/themed-view';
 import { INGREDIENT_SUGGESTIONS, QUANTITY_UNITS } from '@/constants/ingredient-suggestions';
@@ -107,15 +108,14 @@ export function IngredientEditor({ items, onChange }: Props) {
           </Text>
         </View>
         {Platform.OS === 'web' && (
-          <Pressable
+          <Button
+            variant="ghost"
             accessibilityLabel={`Remove ${item.name}`}
-            onPress={() => removeItem(item.id)}
             hitSlop={8}
-            style={({ pressed }) => [styles.webRemove, pressed && styles.pressed]}>
-            <Text variant="bodySmall" themeColor="textSecondary">
-              Remove
-            </Text>
-          </Pressable>
+            onPress={() => removeItem(item.id)}
+            style={styles.webRemove}>
+            Remove
+          </Button>
         )}
       </ThemedView>
     );
@@ -178,30 +178,30 @@ export function IngredientEditor({ items, onChange }: Props) {
             style={[styles.unitInput, inputStyle]}
             accessibilityLabel="Unit for new ingredient"
           />
-          <Pressable
-            accessibilityRole="button"
+          <Button
+            variant="primary"
+            size="sm"
             accessibilityLabel="Add ingredient"
             disabled={!query.trim()}
             onPress={() => addIngredient(query)}
-            style={({ pressed }) => [
-              styles.addBtn,
-              { backgroundColor: theme.text, opacity: query.trim() ? 1 : 0.4 },
-              pressed && query.trim() && styles.pressed,
-            ]}>
-            <Text style={[styles.addBtnLabel, { color: theme.background }]}>Add</Text>
-          </Pressable>
+            style={styles.addBtn}>
+            Add
+          </Button>
         </View>
       </View>
 
       {showSuggestions && suggestions.length > 0 && (
         <ThemedView type="backgroundElement" style={styles.suggestions}>
           {suggestions.map((name) => (
-            <Pressable
+            <Button
               key={name}
+              variant="ghost"
+              fullWidth
+              contentAlign="start"
               onPress={() => addIngredient(name)}
-              style={({ pressed }) => [styles.suggestionRow, pressed && styles.pressed]}>
+              style={styles.suggestionRow}>
               <Text variant="bodySmall">{name}</Text>
-            </Pressable>
+            </Button>
           ))}
         </ThemedView>
       )}
@@ -209,30 +209,18 @@ export function IngredientEditor({ items, onChange }: Props) {
       {showSuggestions &&
         query.trim() &&
         !suggestions.some((s) => s.toLowerCase() === query.trim().toLowerCase()) && (
-        <Pressable
-          onPress={() => addIngredient(query)}
-          style={({ pressed }) => [styles.customAdd, pressed && styles.pressed]}>
+        <Button variant="ghost" onPress={() => addIngredient(query)} style={styles.customAdd}>
           <Text variant="bodySmall" themeColor="textSecondary">
             Add “{query.trim()}”
           </Text>
-        </Pressable>
+        </Button>
       )}
 
       <View style={styles.unitChips}>
         {QUANTITY_UNITS.map((u) => (
-          <Pressable
-            key={u}
-            onPress={() => setUnit(u)}
-            style={({ pressed }) => [
-              styles.chip,
-              { borderColor: theme.backgroundSelected },
-              unit === u && { backgroundColor: theme.backgroundSelected },
-              pressed && styles.pressed,
-            ]}>
-            <Text variant="bodySmall" themeColor={unit === u ? 'text' : 'textSecondary'}>
-              {u}
-            </Text>
-          </Pressable>
+          <Button key={u} variant="chip" selected={unit === u} onPress={() => setUnit(u)}>
+            {u}
+          </Button>
         ))}
       </View>
 
@@ -293,13 +281,6 @@ const styles = StyleSheet.create({
   },
   addBtn: {
     flex: 1,
-    paddingVertical: Spacing.xxsmall,
-    borderRadius: Spacing.xxxsmall,
-    alignItems: 'center',
-  },
-  addBtnLabel: {
-    fontSize: 15,
-    fontWeight: '600',
   },
   suggestions: {
     borderRadius: Spacing.xxxsmall,
@@ -316,12 +297,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.xxxxsmall,
-  },
-  chip: {
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: Spacing.xxxsmall,
-    paddingHorizontal: Spacing.xxxsmall,
-    paddingVertical: Spacing.xxxxsmall,
   },
   list: {
     marginTop: Spacing.xxxxsmall,

@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import React from 'react';
 import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
+import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -60,15 +61,13 @@ export function RecipeImagePicker({ imageUri, onChange }: Props) {
         )}
       </Pressable>
       {imageUri && (
-        <Pressable
-          accessibilityRole="button"
+        <Button
+          variant="ghost"
           accessibilityLabel="Remove recipe image"
           onPress={() => onChange(null)}
-          style={({ pressed }) => [styles.removeLink, pressed && styles.pressed]}>
-          <Text variant="bodySmall" themeColor="textSecondary">
-            Remove image
-          </Text>
-        </Pressable>
+          style={styles.removeLink}>
+          Remove image
+        </Button>
       )}
     </View>
   );

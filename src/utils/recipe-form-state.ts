@@ -8,6 +8,7 @@ import type {
 
 export type ManualFormState = {
   title: string;
+  url: string;
   imageUri: string | null;
   cookbookId: string | null;
   ingredients: RecipeIngredient[];
@@ -24,6 +25,7 @@ export type ManualFormState = {
 export function emptyManualFormState(): ManualFormState {
   return {
     title: '',
+    url: '',
     imageUri: null,
     cookbookId: null,
     ingredients: [],
@@ -41,6 +43,7 @@ export function emptyManualFormState(): ManualFormState {
 export function manualFormStateFromRecipe(recipe: Recipe): ManualFormState {
   return {
     title: recipe.title,
+    url: recipe.url ?? '',
     imageUri: recipe.imageUri ?? null,
     cookbookId: recipe.cookbookIds?.[0] ?? null,
     ingredients: recipe.ingredients ?? [],
@@ -73,9 +76,11 @@ function pruneAdditional(state: ManualFormState): RecipeAdditionalInfo | undefin
 }
 
 export function manualFormStateToRecipePatch(state: ManualFormState, kind: Recipe['kind'] = 'manual') {
+  const urlTrimmed = state.url.trim();
   return {
     kind,
     title: state.title.trim(),
+    url: urlTrimmed || undefined,
     imageUri: state.imageUri ?? undefined,
     cookbookIds: state.cookbookId ? [state.cookbookId] : undefined,
     ingredients: state.ingredients.length > 0 ? state.ingredients : undefined,
