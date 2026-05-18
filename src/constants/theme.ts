@@ -20,6 +20,9 @@ export const Colors = {
     text: "#2B211F",
     secondary: "#E7D7C9",
     border: "#383838",
+    cardBackground: "#F8F1EC",
+    cardText: "#2B211F",
+    cardAccent: "#D4A373",
   },
   dark: {
     // text: "#ffffff",
@@ -33,6 +36,9 @@ export const Colors = {
     text: "#2B211F",
     secondary: "#E7D7C9",
     border: "#383838",
+    cardBackground: "#F8F1EC",
+    cardText: "#2B211F",
+    cardAccent: "#D4A373",
   },
 } as const;
 
@@ -66,6 +72,8 @@ export const Spacing = {
   xxxxlarge: 48,
   xxxxxxlarge: 56,
   xxxxxxxxlarge: 64,
+  xxxxxxxxxlarge: 72,
+  xxxxxxxxxxlarge: 80,
 } as const;
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;

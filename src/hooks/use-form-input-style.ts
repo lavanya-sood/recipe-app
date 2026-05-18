@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import { interStyle } from '@/constants/fonts';
-import { useTheme } from '@/hooks/use-theme';
+import { interStyle } from "@/constants/fonts";
+import { useTheme } from "@/hooks/use-theme";
 
 export function useFormInputStyle() {
   const theme = useTheme();
@@ -10,7 +10,7 @@ export function useFormInputStyle() {
       ...interStyle(400),
       color: theme.text,
       borderColor: theme.backgroundSelected,
-      backgroundColor: theme.backgroundElement,
+      backgroundColor: theme.backgroundSelected,
     }),
     [theme],
   );

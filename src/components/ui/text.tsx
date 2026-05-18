@@ -1,7 +1,5 @@
 import { playfairStyle } from "@/constants/fonts";
 import { Fonts, type ThemeColor } from "@/constants/theme";
-
-const headingFont = playfairStyle(600);
 import { useTheme } from "@/hooks/use-theme";
 import React from "react";
 import {
@@ -11,6 +9,8 @@ import {
   type TextProps as RNTextProps,
   type TextStyle,
 } from "react-native";
+
+const headingFont = playfairStyle(600);
 
 const styles = StyleSheet.create({
   display: {
@@ -37,16 +37,19 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sans,
     fontSize: 16,
     lineHeight: 20,
+    fontWeight: "bold",
   },
   h5: {
     fontFamily: Fonts.sans,
     fontSize: 14,
     lineHeight: 18,
+    fontWeight: "bold",
   },
   h6: {
     fontFamily: Fonts.sans,
     fontSize: 12,
     lineHeight: 16,
+    fontWeight: "bold",
   },
   subtitle: {
     fontFamily: Fonts.sans,
@@ -121,7 +124,10 @@ const styles = StyleSheet.create({
   },
   code: {
     fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: "700" as const, default: "500" as const }),
+    fontWeight: Platform.select({
+      android: "700" as const,
+      default: "500" as const,
+    }),
     fontSize: 12,
     lineHeight: 16,
   },
@@ -155,10 +161,7 @@ export function Text({
   };
 
   return (
-    <RNText
-      style={[styles[variant], colorStyle, style]}
-      {...props}
-    >
+    <RNText style={[styles[variant], colorStyle, style]} {...props}>
       {children}
     </RNText>
   );

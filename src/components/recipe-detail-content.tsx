@@ -1,3 +1,4 @@
+import { RecipeHeroGradient } from "@/components/recipe-hero-gradient";
 import { ScheduleDatetimeModal } from "@/components/schedule-datetime-modal";
 import { ThemedView } from "@/components/themed-view";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import { useRecipes } from "@/context/recipes-context";
 import { useAdaptiveRecipeHeader } from "@/hooks/use-adaptive-recipe-header";
 import { useTheme } from "@/hooks/use-theme";
 import type { Cookbook, Recipe } from "@/types/recipe";
-import { formatIngredientLine } from "@/utils/recipe-ingredients";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -35,6 +35,9 @@ type Props = {
   onRemove: (id: string) => void;
 };
 
+/** How far the content card pulls up over the hero image. */
+const HERO_BODY_OVERLAP = Spacing.xxxxxxxxxxlarge;
+
 export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
   const theme = useTheme();
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
@@ -45,7 +48,7 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
   const hasHeroImage = !!recipe.imageUri;
   const heroHeight = windowHeight * 0.4;
   const { onScroll: onHeaderScroll, statusBarStyle } = useAdaptiveRecipeHeader({
-    enabled: hasHeroImage,
+    enabled: true,
     heroHeight,
     imageUri: recipe.imageUri,
     recipeId: recipe.id,
@@ -75,12 +78,12 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
 
   return (
     <ThemedView style={styles.outer}>
-      {hasHeroImage && <StatusBar style={statusBarStyle} animated />}
+      <StatusBar style={statusBarStyle} animated />
       <ScrollView
         style={styles.scroll}
-        onScroll={hasHeroImage ? onHeaderScroll : undefined}
+        onScroll={onHeaderScroll}
         scrollEventThrottle={16}
-        contentInsetAdjustmentBehavior={hasHeroImage ? "never" : "automatic"}
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={[
           styles.scrollContent,
           {
@@ -89,15 +92,30 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
           },
         ]}
       >
-        {hasHeroImage && (
+        {hasHeroImage ? (
           <Image
             source={{ uri: recipe.imageUri }}
             style={[styles.hero, { width: windowWidth, height: heroHeight }]}
             contentFit="cover"
           />
+        ) : (
+          <RecipeHeroGradient
+            width={windowWidth}
+            height={heroHeight}
+            primary={theme.primary}
+          />
         )}
 
-        <View style={styles.body}>
+        <View
+          style={[
+            styles.body,
+            styles.bodyOverlap,
+            {
+              backgroundColor: theme.background,
+              marginTop: -HERO_BODY_OVERLAP,
+            },
+          ]}
+        >
           <View style={styles.titleContainer}>
             <Text variant="h2">{recipe.title}</Text>
             <Pressable
@@ -118,7 +136,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
           {recipe.additionalInfo && (
             <View style={styles.infoContainer}>
               {recipe.additionalInfo.prepTime && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="text">
                     Prep
                   </Text>
@@ -128,7 +155,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 </View>
               )}
               {recipe.additionalInfo.cookTime && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="text">
                     Cook
                   </Text>
@@ -138,7 +174,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 </View>
               )}
               {recipe.additionalInfo.servings && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="text">
                     Servings
                   </Text>
@@ -150,43 +195,48 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
             </View>
           )}
 
-          {recipe.url && (
-            <Button
-              variant="ghost"
-              accessibilityRole="link"
-              accessibilityLabel="Open original post"
-              style={styles.linkBanner}
-              onPress={async () => {
-                const href = recipe.url;
-                if (!href) return;
-                if (Platform.OS === "web") {
-                  await Linking.openURL(href);
-                } else {
-                  await openBrowserAsync(href, {
-                    presentationStyle: WebBrowserPresentationStyle.AUTOMATIC,
-                  });
-                }
-              }}
-            >
-              <Text variant="linkPrimary">Open original post</Text>
-            </Button>
-          )}
-
           {!!recipe.ingredients?.length && (
             <>
-              <Text variant="bodySmallBold" style={styles.sectionLabel}>
-                Ingredients
-              </Text>
+              <View style={styles.sectionHeading}>
+                <Text variant="h4" style={styles.sectionLabel}>
+                  Ingredients
+                </Text>
+                <View
+                  style={[styles.sectionLine, { borderColor: theme.primary }]}
+                />
+              </View>
+
               <View style={styles.ingredientList}>
                 {recipe.ingredients.map((item) => (
-                  <Text
-                    key={item.id}
-                    variant="bodySmall"
-                    themeColor="textSecondary"
-                    style={styles.ingredientLine}
-                  >
-                    • {formatIngredientLine(item)}
-                  </Text>
+                  // <Text
+                  //   key={item.id}
+                  //   variant="bodySmall"
+                  //   themeColor="textSecondary"
+                  //   style={styles.ingredientLine}
+                  // >
+                  //   • {formatIngredientLine(item)}
+                  // </Text>
+                  <View key={item.id} style={styles.ingredientItem}>
+                    <Text
+                      variant="h3"
+                      themeColor="accent"
+                      style={styles.ingredientBullet}
+                    >
+                      •
+                    </Text>
+                    <Text variant="bodySmall" themeColor="textSecondary">
+                      {item.name}
+                    </Text>
+                    <View
+                      style={[
+                        styles.lineDotted,
+                        { borderColor: theme.textSecondary },
+                      ]}
+                    />
+                    <Text variant="bodySmall" themeColor="textSecondary">
+                      {item.quantity} {item.unit}
+                    </Text>
+                  </View>
                 ))}
               </View>
             </>
@@ -194,15 +244,28 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
 
           {!!recipe.steps?.length && (
             <>
-              <Text variant="bodySmallBold" style={styles.sectionLabel}>
-                Instructions
-              </Text>
+              <View style={styles.sectionHeading}>
+                <Text variant="h4" style={styles.sectionLabel}>
+                  Instructions
+                </Text>
+                <View
+                  style={[styles.sectionLine, { borderColor: theme.primary }]}
+                />
+              </View>
               <View style={styles.stepList}>
                 {recipe.steps.map((step) => (
                   <View key={step.id} style={styles.stepRow}>
-                    <Text variant="bodySmallBold" style={styles.stepOrder}>
-                      {step.order}.
-                    </Text>
+                    <View
+                      style={[
+                        styles.stepOrderContainer,
+                        { backgroundColor: theme.accent },
+                      ]}
+                    >
+                      <Text variant="bodySmallBold" themeColor="background">
+                        {step.order}
+                      </Text>
+                    </View>
+
                     <Text
                       variant="bodySmall"
                       themeColor="textSecondary"
@@ -219,7 +282,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
           {recipe.nutrition && (
             <View style={styles.infoContainer}>
               {recipe.nutrition.calories && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="textSecondary">
                     Calories
                   </Text>
@@ -229,7 +301,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 </View>
               )}
               {recipe.nutrition.protein && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="textSecondary">
                     Protein
                   </Text>
@@ -239,7 +320,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 </View>
               )}
               {recipe.nutrition.carbs && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="textSecondary">
                     Carbs
                   </Text>
@@ -249,7 +339,16 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
                 </View>
               )}
               {recipe.nutrition.fats && (
-                <View>
+                <View
+                  style={[
+                    styles.infoItemCard,
+                    {
+                      backgroundColor: theme.cardBackground,
+                      borderColor: theme.secondary,
+                      borderWidth: 1,
+                    },
+                  ]}
+                >
                   <Text variant="bodySmallBold" themeColor="textSecondary">
                     Fats
                   </Text>
@@ -277,6 +376,28 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
               </View>
             ))}
           </View>
+
+          {recipe.url && (
+            <Button
+              variant="ghost"
+              accessibilityRole="link"
+              accessibilityLabel="Open original post"
+              style={styles.linkBanner}
+              onPress={async () => {
+                const href = recipe.url;
+                if (!href) return;
+                if (Platform.OS === "web") {
+                  await Linking.openURL(href);
+                } else {
+                  await openBrowserAsync(href, {
+                    presentationStyle: WebBrowserPresentationStyle.AUTOMATIC,
+                  });
+                }
+              }}
+            >
+              <Text variant="linkPrimary">Open original post</Text>
+            </Button>
+          )}
 
           <View style={styles.actions}>
             <Button
@@ -333,6 +454,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.base,
     gap: Spacing.xsmall,
     paddingTop: Spacing.base,
+    paddingBottom: Spacing.base,
+  },
+  bodyOverlap: {
+    borderTopLeftRadius: Spacing.large,
+    borderTopRightRadius: Spacing.large,
+    zIndex: 1,
+    paddingTop: Spacing.medium,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+      default: {},
+    }),
   },
   titleContainer: {
     flexDirection: "row",
@@ -341,7 +481,19 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flexDirection: "row",
-    gap: Spacing.base,
+    gap: Spacing.xsmall,
+    justifyContent: "space-between",
+  },
+
+  infoItemCard: {
+    gap: Spacing.xxxsmall,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: Spacing.xxxsmall,
+    borderRadius: Spacing.xxxsmall,
+    // backgroundColor: "rgba(248, 241, 236, 0.85)",
+    // backdropFilter: "blur(12px)",
   },
 
   actions: {
@@ -358,9 +510,7 @@ const styles = StyleSheet.create({
   linkBanner: {
     alignSelf: "flex-start",
   },
-  sectionLabel: {
-    marginTop: Spacing.xxxxsmall,
-  },
+
   bodyBlock: {
     marginTop: -Spacing.xxxsmall,
     lineHeight: 22,
@@ -381,9 +531,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xxxsmall,
     alignItems: "flex-start",
   },
-  stepOrder: {
-    minWidth: 20,
-  },
+
   stepText: {
     flex: 1,
     lineHeight: 22,
@@ -395,5 +543,42 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: Spacing.xxxsmall,
     alignItems: "center",
+  },
+  sectionHeading: {
+    marginTop: Spacing.xxxsmall,
+    flexDirection: "row",
+    // alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: Spacing.xxxxsmall,
+  },
+  sectionLine: {
+    flex: 1,
+    borderBottomWidth: 3,
+    // borderStyle: "dashed",
+    marginHorizontal: Spacing.xxxsmall,
+  },
+  sectionLabel: {},
+  ingredientItem: {
+    // marginTop: Spacing.xxxsmall,
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-between",
+  },
+  lineDotted: {
+    flex: 1,
+    borderBottomWidth: 2,
+    borderStyle: "dotted",
+    marginHorizontal: Spacing.xxxsmall,
+  },
+  ingredientBullet: {
+    marginRight: Spacing.xxxsmall,
+  },
+  stepOrderContainer: {
+    width: 24,
+    height: 24,
+    // padding: Spacing.xxxxsmall,
+    borderRadius: Spacing.xsmall,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

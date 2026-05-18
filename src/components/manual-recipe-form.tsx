@@ -1,24 +1,24 @@
-import { router } from 'expo-router';
-import React from 'react';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { router } from "expo-router";
+import React from "react";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 
-import { CookbookPicker } from '@/components/cookbook-picker';
-import { IngredientEditor } from '@/components/ingredient-editor';
-import { InstructionStepEditor } from '@/components/instruction-step-editor';
-import { RecipeImagePicker } from '@/components/recipe-image-picker';
-import { Button } from '@/components/ui/button';
-import { Text } from '@/components/ui/text';
-import { useRecipes } from '@/context/recipes-context';
-import { BottomTabInset, Spacing } from '@/constants/theme';
-import { useFormInputStyle } from '@/hooks/use-form-input-style';
-import { useTheme } from '@/hooks/use-theme';
-import type { Recipe } from '@/types/recipe';
+import { CookbookPicker } from "@/components/cookbook-picker";
+import { IngredientEditor } from "@/components/ingredient-editor";
+import { InstructionStepEditor } from "@/components/instruction-step-editor";
+import { RecipeImagePicker } from "@/components/recipe-image-picker";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { BottomTabInset, Spacing } from "@/constants/theme";
+import { useRecipes } from "@/context/recipes-context";
+import { useFormInputStyle } from "@/hooks/use-form-input-style";
+import { useTheme } from "@/hooks/use-theme";
+import type { Recipe } from "@/types/recipe";
 import {
   emptyManualFormState,
   manualFormStateFromRecipe,
   manualFormStateToRecipePatch,
   type ManualFormState,
-} from '@/utils/recipe-form-state';
+} from "@/utils/recipe-form-state";
 
 type Props = {
   recipe?: Recipe;
@@ -26,7 +26,11 @@ type Props = {
   contentPaddingBottom?: number;
 };
 
-export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Props) {
+export function ManualRecipeForm({
+  recipe,
+  onSaved,
+  contentPaddingBottom,
+}: Props) {
   const theme = useTheme();
   const inputStyle = useFormInputStyle();
   const { addRecipe, updateRecipe, cookbooks, addCookbook } = useRecipes();
@@ -38,7 +42,10 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
   const [error, setError] = React.useState<string | null>(null);
   const [saving, setSaving] = React.useState(false);
 
-  function patch<K extends keyof ManualFormState>(key: K, value: ManualFormState[K]) {
+  function patch<K extends keyof ManualFormState>(
+    key: K,
+    value: ManualFormState[K],
+  ) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -53,11 +60,14 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
     try {
       const t = form.title.trim();
       if (!t) {
-        setError('Add a title for your recipe.');
+        setError("Add a title for your recipe.");
         return;
       }
 
-      const payload = manualFormStateToRecipePatch(form, recipe?.kind ?? 'manual');
+      const payload = manualFormStateToRecipePatch(
+        form,
+        recipe?.kind ?? "manual",
+      );
 
       if (isEdit && recipe) {
         await updateRecipe(recipe.id, payload);
@@ -77,26 +87,37 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={[
         styles.form,
-        { paddingBottom: contentPaddingBottom ?? BottomTabInset + Spacing.xxxxxxxxlarge },
-      ]}>
-      <Text variant="bodySmallBold">Title</Text>
-      <TextInput
-        value={form.title}
-        onChangeText={(v) => patch('title', v)}
-        placeholder="e.g. Weeknight dal"
-        placeholderTextColor={theme.textSecondary}
-        style={[styles.input, inputStyle]}
-        accessibilityLabel="Recipe title"
-      />
+        {
+          paddingBottom:
+            contentPaddingBottom ?? BottomTabInset + Spacing.xxxxxxxxlarge,
+        },
+      ]}
+    >
+      <Text variant="h2">Add a recipe</Text>
+      <View style={styles.section}>
+        <Text variant="bodySmallBold">Title</Text>
+        <TextInput
+          value={form.title}
+          onChangeText={(v) => patch("title", v)}
+          placeholder="e.g. Butter Chicken"
+          placeholderTextColor={theme.textSecondary}
+          style={[styles.input, inputStyle]}
+          accessibilityLabel="Recipe title"
+        />
+      </View>
 
       <View style={styles.section}>
         <Text variant="bodySmallBold">Source URL</Text>
-        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
+        <Text
+          variant="bodySmall"
+          themeColor="textSecondary"
+          style={styles.hint}
+        >
           Optional — link to the original recipe or article.
         </Text>
         <TextInput
           value={form.url}
-          onChangeText={(v) => patch('url', v)}
+          onChangeText={(v) => patch("url", v)}
           placeholder="https://…"
           placeholderTextColor={theme.textSecondary}
           autoCapitalize="none"
@@ -107,31 +128,44 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
         />
       </View>
 
-      <RecipeImagePicker imageUri={form.imageUri} onChange={(v) => patch('imageUri', v)} />
+      <RecipeImagePicker
+        imageUri={form.imageUri}
+        onChange={(v) => patch("imageUri", v)}
+      />
 
       <CookbookPicker
         cookbooks={cookbooks}
         selectedId={form.cookbookId}
-        onChange={(v) => patch('cookbookId', v)}
+        onChange={(v) => patch("cookbookId", v)}
         onCreateCookbook={addCookbook}
       />
 
-      <IngredientEditor items={form.ingredients} onChange={(v) => patch('ingredients', v)} />
+      <IngredientEditor
+        items={form.ingredients}
+        onChange={(v) => patch("ingredients", v)}
+      />
 
-      <InstructionStepEditor steps={form.steps} onChange={(v) => patch('steps', v)} />
+      <InstructionStepEditor
+        steps={form.steps}
+        onChange={(v) => patch("steps", v)}
+      />
 
       <View style={styles.section}>
         <Text variant="bodySmallBold">Nutritional info</Text>
-        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
+        <Text
+          variant="bodySmall"
+          themeColor="textSecondary"
+          style={styles.hint}
+        >
           Optional — per serving or total, however you track it.
         </Text>
         <View style={styles.grid}>
           {(
             [
-              ['Calories', 'calories', 'e.g. 420', 'numeric'],
-              ['Protein', 'protein', 'e.g. 28g', 'default'],
-              ['Carbs', 'carbs', 'e.g. 45g', 'default'],
-              ['Fats', 'fats', 'e.g. 12g', 'default'],
+              ["Calories", "calories", "e.g. 420", "numeric"],
+              ["Protein", "protein", "e.g. 28g", "default"],
+              ["Carbs", "carbs", "e.g. 45g", "default"],
+              ["Fats", "fats", "e.g. 12g", "default"],
             ] as const
           ).map(([label, key, placeholder, keyboard]) => (
             <View key={key} style={styles.gridCell}>
@@ -143,7 +177,7 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
                 onChangeText={(v) => patch(key, v)}
                 placeholder={placeholder}
                 placeholderTextColor={theme.textSecondary}
-                keyboardType={keyboard === 'numeric' ? 'numeric' : 'default'}
+                keyboardType={keyboard === "numeric" ? "numeric" : "default"}
                 style={[styles.input, inputStyle]}
                 accessibilityLabel={label}
               />
@@ -154,7 +188,11 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
 
       <View style={styles.section}>
         <Text variant="bodySmallBold">Additional info</Text>
-        <Text variant="bodySmall" themeColor="textSecondary" style={styles.hint}>
+        <Text
+          variant="bodySmall"
+          themeColor="textSecondary"
+          style={styles.hint}
+        >
           Optional — servings and timing.
         </Text>
         <View style={styles.grid}>
@@ -164,7 +202,7 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
             </Text>
             <TextInput
               value={form.servings}
-              onChangeText={(v) => patch('servings', v)}
+              onChangeText={(v) => patch("servings", v)}
               placeholder="e.g. 4"
               placeholderTextColor={theme.textSecondary}
               keyboardType="numeric"
@@ -178,7 +216,7 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
             </Text>
             <TextInput
               value={form.prepTime}
-              onChangeText={(v) => patch('prepTime', v)}
+              onChangeText={(v) => patch("prepTime", v)}
               placeholder="e.g. 15 min"
               placeholderTextColor={theme.textSecondary}
               style={[styles.input, inputStyle]}
@@ -191,7 +229,7 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
             </Text>
             <TextInput
               value={form.cookTime}
-              onChangeText={(v) => patch('cookTime', v)}
+              onChangeText={(v) => patch("cookTime", v)}
               placeholder="e.g. 30 min"
               placeholderTextColor={theme.textSecondary}
               style={[styles.input, inputStyle]}
@@ -213,9 +251,10 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
         loading={saving}
         disabled={saving}
         onPress={() => void onSave()}
-        accessibilityLabel={isEdit ? 'Save changes' : 'Save recipe'}
-        style={styles.saveBtn}>
-        {isEdit ? 'Save changes' : 'Save recipe'}
+        accessibilityLabel={isEdit ? "Save changes" : "Save recipe"}
+        style={styles.saveBtn}
+      >
+        {isEdit ? "Save changes" : "Save recipe"}
       </Button>
     </ScrollView>
   );
@@ -223,10 +262,10 @@ export function ManualRecipeForm({ recipe, onSaved, contentPaddingBottom }: Prop
 
 const styles = StyleSheet.create({
   form: {
-    gap: Spacing.base,
-    paddingTop: Spacing.xxxsmall,
+    paddingTop: Spacing.xxsmall,
   },
   section: {
+    marginTop: Spacing.xsmall,
     gap: Spacing.xxxsmall,
   },
   input: {
@@ -241,19 +280,19 @@ const styles = StyleSheet.create({
     marginTop: -Spacing.xxxxsmall,
   },
   grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: Spacing.xsmall,
   },
   gridCell: {
-    width: '47%',
+    width: "47%",
     gap: Spacing.xxxxsmall,
   },
   gridCellWide: {
-    width: '100%',
+    width: "100%",
   },
   error: {
-    color: '#d32f2f',
+    color: "#d32f2f",
   },
   saveBtn: {
     marginTop: Spacing.xxxsmall,

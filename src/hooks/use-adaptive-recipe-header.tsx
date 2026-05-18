@@ -9,6 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Text } from '@/components/ui/text';
 import { useTheme } from '@/hooks/use-theme';
+import { mixHex } from '@/utils/color-mix';
 import { isHeroImageLight } from '@/utils/hero-image-luminance';
 
 const HEADER_BAR_HEIGHT = 44;
@@ -20,20 +21,6 @@ function hexToRgb(hex: string): [number, number, number] {
     parseInt(normalized.slice(2, 4), 16),
     parseInt(normalized.slice(4, 6), 16),
   ];
-}
-
-function mixHex(from: string, to: string, amount: number): string {
-  const parse = (hex: string) => {
-    const n = hex.replace('#', '');
-    return [parseInt(n.slice(0, 2), 16), parseInt(n.slice(2, 4), 16), parseInt(n.slice(4, 6), 16)];
-  };
-  const [r1, g1, b1] = parse(from);
-  const [r2, g2, b2] = parse(to);
-  const t = Math.min(Math.max(amount, 0), 1);
-  const r = Math.round(r1 + (r2 - r1) * t);
-  const g = Math.round(g1 + (g2 - g1) * t);
-  const b = Math.round(b1 + (b2 - b1) * t);
-  return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
 }
 
 type Options = {
@@ -51,8 +38,13 @@ export function useAdaptiveRecipeHeader({ enabled, heroHeight, imageUri, recipeI
   const [heroIsLight, setHeroIsLight] = React.useState<boolean | null>(null);
 
   React.useEffect(() => {
-    if (!enabled || !imageUri) {
+    if (!enabled) {
       setHeroIsLight(null);
+      return;
+    }
+    if (!imageUri) {
+      // Primary gradient hero — use light header chrome.
+      setHeroIsLight(false);
       return;
     }
     let cancelled = false;
