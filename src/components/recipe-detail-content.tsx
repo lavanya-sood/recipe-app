@@ -1,15 +1,16 @@
-import { RecipeHeroGradient } from "@/components/recipe-hero-gradient";
+import { RecipeHeroBanner } from "@/components/recipe-hero-banner";
 import { ScheduleDatetimeModal } from "@/components/schedule-datetime-modal";
 import { ThemedView } from "@/components/themed-view";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
+import { MaxContentWidth, ShadowFloating, Spacing } from "@/constants/theme";
 import { useRecipes } from "@/context/recipes-context";
 import { useAdaptiveRecipeHeader } from "@/hooks/use-adaptive-recipe-header";
 import { useTheme } from "@/hooks/use-theme";
-import type { Cookbook, Recipe } from "@/types/recipe";
+import type { Cookbook, Recipe, RecipeIngredient } from "@/types/recipe";
+import { hexToRgba } from "@/utils/color-mix";
 import Entypo from "@expo/vector-icons/Entypo";
-import { Image } from "expo-image";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -26,6 +27,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   View,
+  type ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -35,8 +37,64 @@ type Props = {
   onRemove: (id: string) => void;
 };
 
-/** How far the content card pulls up over the hero image. */
-const HERO_BODY_OVERLAP = Spacing.xxxxxxxxxxlarge;
+const HERO_BODY_OVERLAP = Spacing.large;
+const SHEET_TOP_RADIUS = Spacing.large;
+const CONTENT_PAD = Spacing.base;
+/** Approximate height of the schedule CTA row (excl. safe area). */
+const FOOTER_CTA_HEIGHT = 52;
+
+function formatIngredientAmount(item: RecipeIngredient): string | null {
+  const qty = item.quantity?.trim();
+  const unit = item.unit?.trim();
+  if (qty && unit) return `${qty} ${unit}`;
+  return qty ?? unit ?? null;
+}
+
+function surfaceCardStyle(theme: ReturnType<typeof useTheme>): ViewStyle {
+  return {
+    backgroundColor: theme.surfaceElevated,
+    borderColor: theme.secondary,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Spacing.xxsmall,
+    ...ShadowFloating,
+  };
+}
+
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <Text variant="h3" style={styles.sectionTitle}>
+      {title}
+    </Text>
+  );
+}
+
+function StatSurface({ label, value }: { label: string; value: string }) {
+  const theme = useTheme();
+  return (
+    <View style={[styles.statSurface, surfaceCardStyle(theme)]}>
+      <Text variant="caption" style={{ color: theme.textMuted }}>
+        {label}
+      </Text>
+      <Text variant="bodyRegBold" style={styles.statValue}>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function NutritionMetric({ label, value }: { label: string; value: string }) {
+  const theme = useTheme();
+  return (
+    <View style={[styles.nutritionMetric, surfaceCardStyle(theme)]}>
+      <Text variant="caption" style={{ color: theme.textMuted }}>
+        {label}
+      </Text>
+      <Text style={[styles.nutritionValue, { color: theme.text }]}>
+        {value}
+      </Text>
+    </View>
+  );
+}
 
 export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
   const theme = useTheme();
@@ -45,7 +103,6 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
   const { isFavorite, toggleFavorite } = useRecipes();
   const [scheduleOpen, setScheduleOpen] = React.useState(false);
   const favourited = isFavorite(recipe.id);
-  const hasHeroImage = !!recipe.imageUri;
   const heroHeight = windowHeight * 0.4;
   const { onScroll: onHeaderScroll, statusBarStyle } = useAdaptiveRecipeHeader({
     enabled: true,
@@ -57,6 +114,19 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
   const recipeCookbooks = (recipe.cookbookIds ?? [])
     .map((id) => cookbooks.find((c) => c.id === id)?.name)
     .filter(Boolean) as string[];
+
+  const safeBottom = Math.max(insets.bottom, Spacing.xxxsmall);
+  /** Scroll padding so last content clears the floating schedule button. */
+  const scrollBottomPad = safeBottom + FOOTER_CTA_HEIGHT + Spacing.xsmall;
+  const footerFadeColors = React.useMemo(
+    () =>
+      [
+        hexToRgba(theme.background, 0),
+        hexToRgba(theme.background, 0.88),
+        theme.background,
+      ] as const,
+    [theme.background],
+  );
 
   function confirmDelete() {
     Alert.alert(
@@ -84,302 +154,176 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
         onScroll={onHeaderScroll}
         scrollEventThrottle={16}
         contentInsetAdjustmentBehavior="never"
-        contentContainerStyle={[
-          styles.scrollContent,
-          {
-            paddingBottom:
-              insets.bottom + BottomTabInset + Spacing.xxxxxxxxlarge,
-          },
-        ]}
+        contentContainerStyle={{ paddingBottom: scrollBottomPad }}
       >
-        {hasHeroImage ? (
-          <Image
-            source={{ uri: recipe.imageUri }}
-            style={[styles.hero, { width: windowWidth, height: heroHeight }]}
-            contentFit="cover"
-          />
-        ) : (
-          <RecipeHeroGradient
-            width={windowWidth}
-            height={heroHeight}
-            primary={theme.primary}
-          />
-        )}
+        <RecipeHeroBanner
+          width={windowWidth}
+          height={heroHeight}
+          imageUri={recipe.imageUri}
+          primary={theme.primary}
+        />
 
         <View
           style={[
             styles.body,
-            styles.bodyOverlap,
+            styles.bodySheet,
+            ShadowFloating,
             {
-              backgroundColor: theme.background,
+              backgroundColor: theme.surfaceElevated,
               marginTop: -HERO_BODY_OVERLAP,
             },
           ]}
         >
           <View style={styles.titleContainer}>
-            <Text variant="h2">{recipe.title}</Text>
+            <Text variant="h2" style={styles.recipeTitle}>
+              {recipe.title}
+            </Text>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={
                 favourited ? "Remove from favourites" : "Add to favourites"
               }
               onPress={() => toggleFavorite(recipe.id)}
+              hitSlop={12}
             >
               <Entypo
                 name={favourited ? "heart" : "heart-outlined"}
-                size={32}
+                size={28}
                 color={theme.primary}
               />
             </Pressable>
           </View>
 
           {recipe.additionalInfo && (
-            <View style={styles.infoContainer}>
+            <View style={styles.metaRow}>
               {recipe.additionalInfo.prepTime && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="text">
-                    Prep
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.additionalInfo.prepTime}
-                  </Text>
-                </View>
+                <StatSurface
+                  label="Prep"
+                  value={recipe.additionalInfo.prepTime}
+                />
               )}
               {recipe.additionalInfo.cookTime && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="text">
-                    Cook
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.additionalInfo.cookTime}
-                  </Text>
-                </View>
+                <StatSurface
+                  label="Cook"
+                  value={recipe.additionalInfo.cookTime}
+                />
               )}
               {recipe.additionalInfo.servings && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="text">
-                    Servings
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.additionalInfo.servings}
-                  </Text>
-                </View>
+                <StatSurface
+                  label="Servings"
+                  value={recipe.additionalInfo.servings}
+                />
               )}
             </View>
           )}
 
           {!!recipe.ingredients?.length && (
-            <>
-              <View style={styles.sectionHeading}>
-                <Text variant="h4" style={styles.sectionLabel}>
-                  Ingredients
-                </Text>
-                <View
-                  style={[styles.sectionLine, { borderColor: theme.primary }]}
-                />
-              </View>
-
+            <View style={styles.section}>
+              <SectionHeader title="Ingredients" />
               <View style={styles.ingredientList}>
-                {recipe.ingredients.map((item) => (
-                  // <Text
-                  //   key={item.id}
-                  //   variant="bodySmall"
-                  //   themeColor="textSecondary"
-                  //   style={styles.ingredientLine}
-                  // >
-                  //   • {formatIngredientLine(item)}
-                  // </Text>
-                  <View key={item.id} style={styles.ingredientItem}>
-                    <Text
-                      variant="h3"
-                      themeColor="accent"
-                      style={styles.ingredientBullet}
-                    >
-                      •
-                    </Text>
-                    <Text variant="bodySmall" themeColor="textSecondary">
-                      {item.name}
-                    </Text>
-                    <View
-                      style={[
-                        styles.lineDotted,
-                        { borderColor: theme.textSecondary },
-                      ]}
-                    />
-                    <Text variant="bodySmall" themeColor="textSecondary">
-                      {item.quantity} {item.unit}
-                    </Text>
-                  </View>
-                ))}
+                {recipe.ingredients.map((item) => {
+                  const amount = formatIngredientAmount(item);
+                  return (
+                    <View key={item.id} style={styles.ingredientRow}>
+                      <Text variant="bodyReg" style={styles.ingredientName}>
+                        {item.name}
+                      </Text>
+                      {amount ? (
+                        <Text
+                          variant="bodySmall"
+                          style={{ color: theme.textMuted }}
+                        >
+                          {amount}
+                        </Text>
+                      ) : null}
+                    </View>
+                  );
+                })}
               </View>
-            </>
+            </View>
           )}
 
           {!!recipe.steps?.length && (
-            <>
-              <View style={styles.sectionHeading}>
-                <Text variant="h4" style={styles.sectionLabel}>
-                  Instructions
-                </Text>
-                <View
-                  style={[styles.sectionLine, { borderColor: theme.primary }]}
-                />
-              </View>
+            <View style={styles.section}>
+              <SectionHeader title="Instructions" />
               <View style={styles.stepList}>
                 {recipe.steps.map((step) => (
                   <View key={step.id} style={styles.stepRow}>
                     <View
                       style={[
-                        styles.stepOrderContainer,
-                        { backgroundColor: theme.accent },
+                        styles.stepOrder,
+                        {
+                          backgroundColor: theme.background,
+                          borderColor: theme.secondary,
+                          borderWidth: StyleSheet.hairlineWidth,
+                        },
                       ]}
                     >
-                      <Text variant="bodySmallBold" themeColor="background">
+                      <Text variant="captionBold" themeColor="textSecondary">
                         {step.order}
                       </Text>
                     </View>
-
-                    <Text
-                      variant="bodySmall"
-                      themeColor="textSecondary"
-                      style={styles.stepText}
-                    >
+                    <Text variant="bodyReg" style={styles.stepText}>
                       {step.text}
                     </Text>
                   </View>
                 ))}
               </View>
-            </>
-          )}
-
-          {recipe.nutrition && (
-            <View style={styles.infoContainer}>
-              {recipe.nutrition.calories && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="textSecondary">
-                    Calories
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.nutrition.calories}kcal
-                  </Text>
-                </View>
-              )}
-              {recipe.nutrition.protein && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="textSecondary">
-                    Protein
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.nutrition.protein}g
-                  </Text>
-                </View>
-              )}
-              {recipe.nutrition.carbs && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="textSecondary">
-                    Carbs
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.nutrition.carbs}g
-                  </Text>
-                </View>
-              )}
-              {recipe.nutrition.fats && (
-                <View
-                  style={[
-                    styles.infoItemCard,
-                    {
-                      backgroundColor: theme.cardBackground,
-                      borderColor: theme.secondary,
-                      borderWidth: 1,
-                    },
-                  ]}
-                >
-                  <Text variant="bodySmallBold" themeColor="textSecondary">
-                    Fats
-                  </Text>
-                  <Text variant="bodySmall" themeColor="textSecondary">
-                    {recipe.nutrition.fats}g
-                  </Text>
-                </View>
-              )}
             </View>
           )}
 
-          <View style={styles.badges}>
-            {recipeCookbooks.map((name) => (
-              <View
-                key={name}
-                style={[styles.badge, { backgroundColor: theme.accent }]}
-              >
-                <Entypo name="open-book" size={18} color={theme.background} />
-                <Text
-                  variant="bodySmallBold"
-                  style={{ color: theme.background }}
-                >
-                  {name}
-                </Text>
+          {recipe.nutrition && (
+            <View style={styles.section}>
+              <SectionHeader title="Nutrition" />
+              <View style={styles.nutritionRow}>
+                {recipe.nutrition.calories && (
+                  <NutritionMetric
+                    label="Calories"
+                    value={recipe.nutrition.calories.replace(/\s*kcal$/i, "")}
+                  />
+                )}
+                {recipe.nutrition.protein && (
+                  <NutritionMetric
+                    label="Protein"
+                    value={recipe.nutrition.protein.replace(/\s*g$/i, "")}
+                  />
+                )}
+                {recipe.nutrition.carbs && (
+                  <NutritionMetric
+                    label="Carbs"
+                    value={recipe.nutrition.carbs.replace(/\s*g$/i, "")}
+                  />
+                )}
+                {recipe.nutrition.fats && (
+                  <NutritionMetric
+                    label="Fats"
+                    value={recipe.nutrition.fats.replace(/\s*g$/i, "")}
+                  />
+                )}
               </View>
-            ))}
-          </View>
+            </View>
+          )}
+
+          {recipeCookbooks.length > 0 && (
+            <View style={styles.badges}>
+              {recipeCookbooks.map((name) => (
+                <View
+                  key={name}
+                  style={[styles.badge, surfaceCardStyle(theme)]}
+                >
+                  <Entypo name="open-book" size={15} color={theme.textMuted} />
+                  <Text variant="bodySmall" style={{ color: theme.textMuted }}>
+                    {name}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
 
           {recipe.url && (
             <Button
-              variant="ghost"
+              variant="outline"
+              fullWidth
               accessibilityRole="link"
               accessibilityLabel="Open original post"
               style={styles.linkBanner}
@@ -399,30 +343,47 @@ export function RecipeDetailContent({ recipe, cookbooks, onRemove }: Props) {
             </Button>
           )}
 
-          <View style={styles.actions}>
-            <Button
-              variant="primary"
-              size="sm"
-              accessibilityLabel="Schedule recipe"
-              leftIcon={
-                <Entypo name="calendar" size={18} color={theme.background} />
-              }
-              onPress={() => setScheduleOpen(true)}
-              fullWidth
-            >
-              Schedule
-            </Button>
-            <Button
-              variant="destructive"
-              accessibilityLabel="Delete recipe"
-              onPress={confirmDelete}
-              fullWidth
-            >
+          <Button
+            variant="ghost"
+            accessibilityLabel="Delete recipe"
+            onPress={confirmDelete}
+            style={styles.deleteLink}
+          >
+            <Text variant="bodySmall" style={{ color: "#d32f2f" }}>
               Delete recipe
-            </Button>
-          </View>
+            </Text>
+          </Button>
         </View>
       </ScrollView>
+
+      <View style={styles.footerOverlay} pointerEvents="box-none">
+        <LinearGradient
+          colors={footerFadeColors}
+          locations={[0, 0.55, 1]}
+          style={[styles.footerFade, { height: scrollBottomPad + 48 }]}
+          pointerEvents="none"
+        />
+        <View
+          style={[
+            styles.footerBtnWrap,
+            { paddingBottom: safeBottom, maxWidth: MaxContentWidth },
+          ]}
+        >
+          <Button
+            variant="primary"
+            size="md"
+            accessibilityLabel="Schedule recipe"
+            leftIcon={
+              <Entypo name="calendar" size={18} color={theme.surfaceElevated} />
+            }
+            onPress={() => setScheduleOpen(true)}
+            fullWidth
+            style={[styles.scheduleBtn, ShadowFloating]}
+          >
+            Schedule
+          </Button>
+        </View>
+      </View>
 
       <ScheduleDatetimeModal
         visible={scheduleOpen}
@@ -441,144 +402,145 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  hero: {
-    alignSelf: "center",
-  },
   body: {
     alignSelf: "center",
     width: "100%",
     maxWidth: MaxContentWidth,
-    paddingHorizontal: Spacing.base,
-    gap: Spacing.xsmall,
-    paddingTop: Spacing.base,
-    paddingBottom: Spacing.base,
-  },
-  bodyOverlap: {
-    borderTopLeftRadius: Spacing.large,
-    borderTopRightRadius: Spacing.large,
-    zIndex: 1,
+    paddingHorizontal: CONTENT_PAD,
+    gap: Spacing.medium,
     paddingTop: Spacing.medium,
-    ...Platform.select({
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 6,
-      },
-      default: {},
-    }),
+    paddingBottom: Spacing.small,
+  },
+  bodySheet: {
+    borderTopLeftRadius: SHEET_TOP_RADIUS,
+    borderTopRightRadius: SHEET_TOP_RADIUS,
+    zIndex: 1,
+  },
+  recipeTitle: {
+    flex: 1,
+    letterSpacing: -0.5,
   },
   titleContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-  },
-  infoContainer: {
-    flexDirection: "row",
+    alignItems: "flex-start",
     gap: Spacing.xsmall,
-    justifyContent: "space-between",
   },
-
-  infoItemCard: {
-    gap: Spacing.xxxsmall,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: Spacing.xxxsmall,
-    borderRadius: Spacing.xxxsmall,
-    // backgroundColor: "rgba(248, 241, 236, 0.85)",
-    // backdropFilter: "blur(12px)",
-  },
-
-  actions: {
-    // flexDirection: "row",
+  metaRow: {
+    flexDirection: "row",
     flexWrap: "wrap",
     gap: Spacing.xxxsmall,
+  },
+  statSurface: {
+    flex: 1,
+    minWidth: "28%",
+    gap: Spacing.xxxxxsmall,
+    paddingVertical: Spacing.xsmall,
+    paddingHorizontal: Spacing.xsmall,
+    alignItems: "center",
+  },
+  statValue: {
+    fontWeight: "600",
+  },
+  section: {
+    gap: Spacing.xsmall,
+  },
+  sectionTitle: {
+    letterSpacing: -0.5,
+    fontSize: 24,
+    lineHeight: 30,
+  },
+  nutritionRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.xxxsmall,
+  },
+  nutritionMetric: {
+    flex: 1,
+    minWidth: "44%",
+    gap: Spacing.xxxxsmall,
+    paddingVertical: Spacing.xsmall,
+    paddingHorizontal: Spacing.xsmall,
+    alignItems: "flex-start",
+  },
+  nutritionValue: {
+    fontSize: 30,
+    fontWeight: "700",
+    lineHeight: 34,
+    letterSpacing: -0.5,
   },
   badges: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: Spacing.xxxsmall,
   },
-
+  badge: {
+    paddingHorizontal: Spacing.xsmall,
+    paddingVertical: Spacing.xxxsmall,
+    borderRadius: Spacing.xlarge,
+    flexDirection: "row",
+    gap: Spacing.xxxxsmall,
+    alignItems: "center",
+  },
   linkBanner: {
     alignSelf: "flex-start",
-  },
-
-  bodyBlock: {
     marginTop: -Spacing.xxxsmall,
-    lineHeight: 22,
+  },
+  deleteLink: {
+    alignSelf: "center",
   },
   ingredientList: {
-    marginTop: -Spacing.xxxsmall,
-    gap: Spacing.xxxxsmall,
+    gap: Spacing.xxsmall,
   },
-  ingredientLine: {
-    lineHeight: 22,
+  ingredientRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    gap: Spacing.xsmall,
+  },
+  ingredientName: {
+    flex: 1,
+    fontWeight: "400",
   },
   stepList: {
-    marginTop: -Spacing.xxxsmall,
-    gap: Spacing.xxxsmall,
+    gap: Spacing.small,
   },
   stepRow: {
     flexDirection: "row",
-    gap: Spacing.xxxsmall,
+    gap: Spacing.xsmall,
     alignItems: "flex-start",
   },
-
-  stepText: {
-    flex: 1,
-    lineHeight: 22,
-  },
-  badge: {
-    paddingHorizontal: Spacing.xsmall,
-    paddingVertical: Spacing.xxxxsmall,
-    borderRadius: Spacing.xsmall,
-    flexDirection: "row",
-    gap: Spacing.xxxsmall,
-    alignItems: "center",
-  },
-  sectionHeading: {
-    marginTop: Spacing.xxxsmall,
-    flexDirection: "row",
-    // alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: Spacing.xxxxsmall,
-  },
-  sectionLine: {
-    flex: 1,
-    borderBottomWidth: 3,
-    // borderStyle: "dashed",
-    marginHorizontal: Spacing.xxxsmall,
-  },
-  sectionLabel: {},
-  ingredientItem: {
-    // marginTop: Spacing.xxxsmall,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-  },
-  lineDotted: {
-    flex: 1,
-    borderBottomWidth: 2,
-    borderStyle: "dotted",
-    marginHorizontal: Spacing.xxxsmall,
-  },
-  ingredientBullet: {
-    marginRight: Spacing.xxxsmall,
-  },
-  stepOrderContainer: {
-    width: 24,
-    height: 24,
-    // padding: Spacing.xxxxsmall,
-    borderRadius: Spacing.xsmall,
+  stepOrder: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
+  },
+  stepText: {
+    flex: 1,
+    lineHeight: 24,
+    fontWeight: "400",
+  },
+  footerOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: "center",
+  },
+  footerFade: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  footerBtnWrap: {
+    width: "100%",
+    paddingHorizontal: CONTENT_PAD,
+    paddingTop: Spacing.xxsmall,
+  },
+  scheduleBtn: {
+    borderRadius: Spacing.small,
   },
 });

@@ -174,14 +174,15 @@ function variantStyles(
     case "outline":
       return {
         backgroundColor: "transparent",
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: theme.text,
+        // borderWidth: StyleSheet.hairlineWidth,
+        borderColor: theme.primary,
         borderRadius: size === "md" ? radiusMd : radiusSm,
-        paddingVertical: vPad,
+        paddingVertical: Spacing.xxxsmall,
         paddingHorizontal: Spacing.base,
         alignItems: "center",
         justifyContent: "center",
         opacity: faded ? 0.45 : 1,
+        borderWidth: 1,
       };
     case "destructive":
       return {

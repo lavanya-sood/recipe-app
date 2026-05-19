@@ -9,33 +9,36 @@ import { Platform } from "react-native";
 
 export const Colors = {
   light: {
-    // text: '#000000',
-    // background: '#ffffff',
-    backgroundElement: "#F0F0F3",
+    backgroundElement: "#FFFCFA",
+    /** Floating cards / stats — lifts off page background */
+    surfaceElevated: "#FFFDFC",
     backgroundSelected: "#E0E1E6",
-    textSecondary: "#60646C",
-    background: "#FFF8F3",
+    textSecondary: "#7A6D67",
+    textMuted: "#8B7E77",
+    background: "#F6F1EC",
     primary: "#722F37",
-    accent: "#D4A373",
-    text: "#2B211F",
+    accent: "#C89B63",
+    text: "#3A2A26",
     secondary: "#E7D7C9",
-    border: "#383838",
+    border: "#E8DDD3",
     cardBackground: "#F8F1EC",
     cardText: "#2B211F",
-    cardAccent: "#D4A373",
+    cardAccent: "#C89B63",
   },
   dark: {
     // text: "#ffffff",
     // background: "#000000",
+    surfaceElevated: "#FFFDFC",
+    textMuted: "#8B7E77",
     backgroundElement: "#212225",
     backgroundSelected: "#2E3135",
     textSecondary: "#B0B4BA",
     background: "#FFF8F3",
     primary: "#722F37",
     accent: "#D4A373",
-    text: "#2B211F",
+    text: "#3A2A26",
     secondary: "#E7D7C9",
-    border: "#383838",
+    border: "#E8DDD3",
     cardBackground: "#F8F1EC",
     cardText: "#2B211F",
     cardAccent: "#D4A373",
@@ -55,6 +58,14 @@ export const Fonts = {
     default: "monospace",
   })!,
 };
+
+// Main Background	#F6F1EC
+// Surface/Card	#FFFCFA
+// Primary Wine	#722F37
+// Accent Gold	#C89B63
+// Main Text	#3A2A26
+// Secondary Text	#7A6D67
+// Border	#E8DDD3
 
 export const Spacing = {
   xxxxxsmall: 2,
@@ -78,3 +89,17 @@ export const Spacing = {
 
 export const BottomTabInset = Platform.select({ ios: 50, android: 80 }) ?? 0;
 export const MaxContentWidth = 800;
+
+/** Warm editorial shadow for floating surfaces */
+export const ShadowFloating = Platform.select({
+  ios: {
+    shadowColor: "#32140A",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.06,
+    shadowRadius: 24,
+  },
+  android: {
+    elevation: 8,
+  },
+  default: {},
+});
